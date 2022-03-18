@@ -374,11 +374,11 @@ public class Lexical {
                 || (ch == ']') || (ch == '.'));
     }
 
+
     // returns TRUE if ch is the string delimiter
     private boolean isStringStart(char ch) {
         return ch == '"';
     }
-
 
     // Student supplied methods
     private token getIdent(char ch){
@@ -469,6 +469,8 @@ public class Lexical {
                     result.lexeme = temp;
                 }
                 //Write to symbol Table
+                saveSymbols.AddSymbol(result.lexeme, 'i', 0);
+
                 return result;
 
 
@@ -479,8 +481,9 @@ public class Lexical {
                     System.out.println("Integer length > 15, truncated "+result.lexeme+" to "+temp);
                     result.lexeme = temp; //truncate to 20 chars
                 }
-                saveSymbols.AddSymbol(result.lexeme, 'f', result.lexeme);
                 //Write to Symbol Table (Symbol String, Char Kind, Value)
+                saveSymbols.AddSymbol(result.lexeme, 'i', result.lexeme);
+
                 return result;
 
             //Token Code 52, truncate if length is > 15 to 15
@@ -542,13 +545,6 @@ public class Lexical {
         currCh = skipWhiteSpace();
         if (isLetter(currCh)) { //is ident
             result = getIdent(currCh);
-
-            //if(total > 0){
-            //    for(int i = 0; i <total; i++)
-                    //currCh = GetNextChar();
-             //   total = 0;
-           // }
-
         } else if (isDigit(currCh)) { //is numeric
             result = getNumber(currCh);
         } else if (isStringStart(currCh)) { //string literal
