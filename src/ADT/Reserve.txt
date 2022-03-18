@@ -1,0 +1,7 @@
+Author: Scott Canfield
+
+Index: 0	  Name: cat	 Code:15
+Index: 1	  Name: APPLE	 Code:11
+Index: 2	  Name: Dog	 Code:5
+Index: 3	  Name: DOnE	 Code:21
+Index: 4	  Name: Over	 Code:8

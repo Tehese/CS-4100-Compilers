@@ -1,0 +1,5 @@
+Column: 0	  Opcode:4	 Op1:3	 Op2:2	 Op3:1
+Column: 1	  Opcode:1	 Op1:2	 Op2:3	 Op3:4
+Column: 2	  Opcode:2	 Op1:2	 Op2:2	 Op3:2
+Column: 3	  Opcode:0	 Op1:0	 Op2:0	 Op3:0
+Column: 4	  Opcode:11	 Op1:13	 Op2:15	 Op3:17

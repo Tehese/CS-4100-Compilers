@@ -1,0 +1,6 @@
+n | v | i | 10
+i | v | i | 11
+Sum | v | i | 55
+1 | c | i | 1
+$temp | v | i | 1
+c | v | i | 0
