@@ -378,12 +378,19 @@ public class Lexical {
                 || (ch == ']') || (ch == '.'));
     }
 
+    private boolean CheckSymbol(String ch){
+        return ((ch==":=") || (ch==">=") || (ch=="<=") || (ch=="<>"));
+    }
+
 
     // returns TRUE if ch is the string delimiter
     private boolean isStringStart(char ch) {
         return ch == '"';
     }
 
+    private void updateCurrCh(char ch){
+        currCh = ch;
+    }
     // Student supplied methods
     private token getIdent(char ch){
     //      int lookup = IDENT;
@@ -394,7 +401,9 @@ public class Lexical {
             ch = GetNextChar();
             total +=1 ;
         }
-        currCh = ch;
+
+        updateCurrCh(ch);
+
     // end of token, lookup or IDENT
         result.code = reserveWords.LookupName(result.lexeme);
         if (result.code == -1)
@@ -403,6 +412,7 @@ public class Lexical {
         return result;
     }
 
+    //
     private token getNumber(char ch) {
         token result = new token();
 
@@ -413,19 +423,15 @@ public class Lexical {
                result.code = FLOAT_ID;
            }
 
-           ch = GetNextChar();
+           ch = GetNextChar(); //Update position of Currch with respect to ch
        }
-        currCh = ch;
+        updateCurrCh(ch);
 
         if (result.code != FLOAT_ID) {
             result.code = INTEGER_ID;
         }
         return result;
 
-
-        // Regex for Ints ([0-9]+[.]*[0-9]*)
-        // Regex for Floats ([0-9]+[.]*[0-9]*[Ee][+-][0-9]+)
-        /* a number is:   <digit>+[.<digit>*[E[+|-]<digit>+]] */
     }
 
     //"an unfinished string makes an error ;
@@ -439,14 +445,18 @@ public class Lexical {
             result.lexeme += ch;
             ch = GetNextChar();
 
-            if(isNewLine(ch))
-                result.lexeme = "";
+            if(isNewLine(ch)) {
+                result.code = UNKNOWN_CHAR;
                 System.out.println("Unterminated String");
-            break;
+                updateCurrCh(ch);
+                return result;
+            }
 
 
         }
-        currCh = ch;
+
+        result.code = STRING_ID;
+        updateCurrCh(ch); //Update position of Currch with respect to ch
 
         return result;
     }
@@ -460,15 +470,19 @@ public class Lexical {
         while(isPrefix(ch) || isSymbol(ch)) {
             total =+ 1;
             result.lexeme = result.lexeme + ch;
+
+            if(CheckSymbol(result.lexeme))
+                break;
             ch = GetNextChar();
         }
 
-        currCh = ch;
+        updateCurrCh(ch); //Update position of Currch with respect to ch
 
         result.code = reserveWords.LookupName(result.lexeme);
 
         if (result.code == -1)
             result.code = UNKNOWN_CHAR;
+
         return result;
 
     }
@@ -479,7 +493,8 @@ public class Lexical {
     private final int FLOAT_ID = 52;
     private final int STRING_ID = 53;
     private int maxIdentLength = 20;
-    private int maxNumberLength = 15;
+    private int maxIntLength = 6;
+    private int maxFloatLength = 12;
 
     //Checks the length of the corresponding value, and truncates it if it is to long
     public token checkTruncate(token result) {
@@ -493,39 +508,46 @@ public class Lexical {
                     result.lexeme = temp;
                 }
                 //Write to symbol Table
-                saveSymbols.AddSymbol(result.lexeme, 'i', 0);
+                saveSymbols.AddSymbol(result.lexeme, 'v', 0);
 
                 return result;
 
 
             //Token Code 51, truncate if length is > 15 to 15
             case INTEGER_ID:
-                if(result.lexeme.length() > maxNumberLength){
-                    String temp = result.lexeme.substring(0, maxNumberLength);
+                if(result.lexeme.length() > maxIntLength){
+                    String temp = result.lexeme.substring(0, maxIntLength);
                     System.out.println("Integer length > 15, truncated "+result.lexeme+" to "+temp);
-                    result.lexeme = temp; //truncate to 20 chars
+                    saveSymbols.AddSymbol(result.lexeme, 'c', 0);
+                    return result;
                 }
                 //Write to Symbol Table (Symbol String, Char Kind, Value)
-                saveSymbols.AddSymbol(result.lexeme, 'i', result.lexeme);
+                saveSymbols.AddSymbol(result.lexeme, 'c', new Integer(result.lexeme));
 
                 return result;
 
             //Token Code 52, truncate if length is > 15 to 15
             case FLOAT_ID:
-                if(result.lexeme.length() > maxNumberLength){
-                    String temp =  result.lexeme.substring(0, maxNumberLength);
+                if(result.lexeme.length() > maxFloatLength){
+                    String temp =  result.lexeme.substring(0, maxFloatLength);
                     System.out.println("Float length > 15, truncated "+result.lexeme+" to "+temp);
-                    result.lexeme = temp; //truncate to 20 chars
+                    saveSymbols.AddSymbol(result.lexeme, 'c', new Float(temp));
+                    return result;
                 }
                 //Write to Symbol Table (Symbol String, Char Kind, Value)
-                saveSymbols.AddSymbol(result.lexeme, 'f', result.lexeme);
+                saveSymbols.AddSymbol(result.lexeme, 'c', new Float(result.lexeme));
                 return result;
 
             //String consists of double quotes (""), any chars except line-terminator, and won't excede EOF
 
             case STRING_ID:
 
-                //Write to Symbol Table (Symbol String, Char Kind, Value)
+                if(result.code == UNKNOWN_CHAR){
+                    System.out.println("Unterminated String");
+                }else{
+                    saveSymbols.AddSymbol(result.lexeme, 's', result.lexeme);
+                }
+
                 return result;
 
             default:
