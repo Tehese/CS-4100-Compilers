@@ -4,7 +4,6 @@ public class main {
 
     public static void main(String[] args) {
 
-
             System.out.println("Scott Canfield\n");
             String fileAndPath = "C:\\Users\\someb\\JavaProjects\\CS4100_Compilers\\src\\Test Files\\LexicalTestSP22.txt";
             System.out.println("Lexical for " + fileAndPath);
@@ -24,6 +23,5 @@ public class main {
             }
             symbolList.PrintSymbolTable("C:\\Users\\someb\\JavaProjects\\CS4100_Compilers\\src\\Output Files\\symboltable2.txt");
             System.out.println("Done.");
-
     }
 }

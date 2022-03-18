@@ -37,6 +37,7 @@ public class Lexical {
     private ReserveTable mnemonics = new ReserveTable(50); //a few more than # reserves
     //global char
     char currCh;
+    int total;
 
     //constructor
     public Lexical(String filename, SymbolTable symbols, boolean echoOn) {
@@ -161,7 +162,6 @@ public class Lexical {
         reserveWords.Add("Numeric Constant Int", 51);
         reserveWords.Add("Float Constant Int", 52);
         reserveWords.Add("String Constant", 53);
-
 
         //Anything Else
         reserveWords.Add("UNKNOWN", 99 );
@@ -364,7 +364,14 @@ public class Lexical {
 
     // returns TRUE if ch is a prefix to a 2-character token like := or <=
     private boolean isPrefix(char ch) {
-        return ((ch == ':') || (ch == '<') || (ch == '>'));
+        return ((ch == ':') || (ch == '<') || (ch == '>') || (ch == '='));
+    }
+
+    //
+    private boolean isSymbol(char ch) {
+        return ((ch == '/') || (ch == '*') || (ch == '+')|| (ch == '-')|| (ch == '(')
+                || (ch == ')') || (ch == ';') || (ch == '=') || (ch == ',') || (ch == '[')
+                || (ch == ']') || (ch == '.'));
     }
 
     // returns TRUE if ch is the string delimiter
@@ -373,30 +380,31 @@ public class Lexical {
     }
 
 
-// Student supplied methods
-private token getIdent(char ch){
-    token result = new token();
-    result.lexeme = "" + ch; //have the first char
-    ch = GetNextChar();
-    while (isLetter(ch)||(isDigit(ch)||(ch == '$')||(ch=='_'))) {
-        result.lexeme = result.lexeme + ch; //extend lexeme
-        ch = GetNextChar();
+    // Student supplied methods
+    private token getIdent(char ch){
+    //      int lookup = IDENT;
+        token result = new token();
+
+        while (isLetter(ch)||(isDigit(ch)||(ch == '$')||(ch=='_'))) {
+            result.lexeme += ch; //extend lexeme
+            ch = GetNextChar();
+            total +=1 ;
+        }
+        currCh = ch;
+    // end of token, lookup or IDENT
+        result.code = reserveWords.LookupName(result.lexeme);
+        if (result.code == -1)
+            result.code = IDENT_ID;
+
+        return result;
     }
 
-    // end of token, lookup or IDENT
-    result.code = reserveWords.LookupName(result.lexeme);
-    if (result.code == -1)
-        result.code = IDENT_ID;
-
-    return result;
-}
-
-    private token getNumber() {
-        char ch;
+    private token getNumber(char ch) {
         token result = new token();
-        ch = GetNextChar();
+
        while(isDigit(ch) || (ch=='E') || (ch=='e')||(ch == '.')) {
            result.lexeme = result.lexeme + ch;
+
            if(ch =='E'|| ch =='e'|| ch=='.'){
                result.code = FLOAT_ID;
            }else
@@ -404,6 +412,8 @@ private token getIdent(char ch){
 
            ch = GetNextChar();
        }
+        currCh = ch;
+
         return result;
 
 
@@ -412,14 +422,31 @@ private token getIdent(char ch){
         /* a number is:   <digit>+[.<digit>*[E[+|-]<digit>+]] */
     }
 
-    private token getString() {
+    private token getString(char ch) {
         token result = new token();
+        result.lexeme = "" + ch; //have the first char
+        ch = GetNextChar();
         return result;
     }
 
-    private token getOneTwoChar() {
+    // > < :
+    private token getOneTwoChar(char ch) {
+
         token result = new token();
+        result.lexeme = "" + ch; //have the first char
+        ch = GetNextChar();
+        while(isPrefix(ch) || isSymbol(ch)) {
+            total =+ 1;
+            result.lexeme = result.lexeme + ch;
+            ch = GetNextChar();
+        }
+
+        currCh = ch;
+
+        if (result.code == -1)
+            result.code = UNKNOWN_CHAR;
         return result;
+
     }
 
 
@@ -515,18 +542,28 @@ private token getIdent(char ch){
         currCh = skipWhiteSpace();
         if (isLetter(currCh)) { //is ident
             result = getIdent(currCh);
+
+            //if(total > 0){
+            //    for(int i = 0; i <total; i++)
+                    //currCh = GetNextChar();
+             //   total = 0;
+           // }
+
         } else if (isDigit(currCh)) { //is numeric
-            result = getNumber();
+            result = getNumber(currCh);
         } else if (isStringStart(currCh)) { //string literal
-            result = getString();
+            result = getString(currCh);
         } else //default char checks
         {
-            result = getOneTwoChar();
+            result = getOneTwoChar(currCh);
+
         }
 
         if ((result.lexeme.equals("")) || (EOF)) {
             result = null;
         }
+
+
 //set the mnemonic
         if (result != null) {
             if(Objects.equals(mnemonics.LookupCode(result.code), "")){
