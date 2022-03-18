@@ -244,6 +244,10 @@ public class Lexical {
         return ((ch == ' ') || (ch == '\t') || (ch == '\n'));
     }
 
+    private boolean isNewLine(char ch) {
+        return ((ch == '\n'));
+    }
+
     // Returns the VALUE of the next character without removing it from the
     //    input line.  Useful for checking 2-character tokens that start with
     //    a 1-character token.
@@ -402,18 +406,20 @@ public class Lexical {
     private token getNumber(char ch) {
         token result = new token();
 
-       while(isDigit(ch) || (ch=='E') || (ch=='e')||(ch == '.')) {
+       while(isDigit(ch) || (ch=='E') || (ch=='e')||(ch == '.') || (ch == '-') || (ch =='+')) {
            result.lexeme = result.lexeme + ch;
 
            if(ch =='E'|| ch =='e'|| ch=='.'){
                result.code = FLOAT_ID;
-           }else
-               result.code = INTEGER_ID;
+           }
 
            ch = GetNextChar();
        }
         currCh = ch;
 
+        if (result.code != FLOAT_ID) {
+            result.code = INTEGER_ID;
+        }
         return result;
 
 
@@ -422,10 +428,26 @@ public class Lexical {
         /* a number is:   <digit>+[.<digit>*[E[+|-]<digit>+]] */
     }
 
+    //"an unfinished string makes an error ;
+
     private token getString(char ch) {
         token result = new token();
-        result.lexeme = "" + ch; //have the first char
+        result.lexeme = "";
         ch = GetNextChar();
+
+        while(isNewLine(ch) || ch != '"'){
+            result.lexeme += ch;
+            ch = GetNextChar();
+
+            if(isNewLine(ch))
+                result.lexeme = "";
+                System.out.println("Unterminated String");
+            break;
+
+
+        }
+        currCh = ch;
+
         return result;
     }
 
@@ -442,6 +464,8 @@ public class Lexical {
         }
 
         currCh = ch;
+
+        result.code = reserveWords.LookupName(result.lexeme);
 
         if (result.code == -1)
             result.code = UNKNOWN_CHAR;
