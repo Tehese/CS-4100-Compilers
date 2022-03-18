@@ -36,7 +36,7 @@ public class SymbolTable {
 
             //Checks the entire array for a symbol with the same by with a non-case sensitive search
             for(int i = 0; i < total; i++){
-                if(symbol.toLowerCase() == names[i].toLowerCase())
+                if(symbol.equalsIgnoreCase(names[i]))
                     return i;
             }
             //If the symbol did not exist, create it, and add it to the list.
@@ -58,7 +58,7 @@ public class SymbolTable {
 
             //Checks the entire array for a symbol with the same by with a non-case sensitive search
             for(int i = 0; i < total; i++){
-                if(symbol.toLowerCase() == names[i].toLowerCase())
+                if(symbol.equalsIgnoreCase(names[i]))
                     return i;
             }
             //If the symbol did not exist, create it, and add it to the list.
@@ -80,7 +80,7 @@ public class SymbolTable {
 
             //Checks the entire array for a symbol with the same by with a non-case sensitive search
             for(int i = 0; i < total; i++){
-                if(symbol.toLowerCase() == names[i].toLowerCase())
+                if(symbol.equalsIgnoreCase(names[i]))
                     return i;
             }
             //If the symbol did not exist, create it, and add it to the list.
@@ -190,11 +190,11 @@ public class SymbolTable {
         for (int i = 0; i <total; i++){
 
             if(values[i] instanceof Integer) { //Checking to see if the Object is of type Integer
-                outputList.printf(i +"| "+"%s\t\t | %c | %c | %d\n", names[i], kinds[i], data_type[i], (int) values[i]);
+                outputList.printf(i +"| "+"%15s | %c | %c | %d\n", names[i], kinds[i], data_type[i], (int) values[i]);
             }else if ( values[i] instanceof  Float){ //Checking to see if Object is of type Float
-                outputList.printf(i +"| "+"%s\t\t | %c | %c | %f\n", names[i], kinds[i], data_type[i], (float) values[i]);
+                outputList.printf(i +"| "+"%15s | %c | %c | %.1f\n", names[i], kinds[i], data_type[i], (float) values[i]);
             }else if ( values[i] instanceof String){ //Checking to see if the Object is of type String
-                outputList.printf(i +"| "+"%s\t\t | %c | %c | %s\n", names[i], kinds[i], data_type[i],  values[i].toString());
+                outputList.printf(i +"| "+"%15s | %c | %c | %s\n", names[i], kinds[i], data_type[i],  values[i].toString());
             }
         }
         outputList.close(); //Closes the file so writing is complete

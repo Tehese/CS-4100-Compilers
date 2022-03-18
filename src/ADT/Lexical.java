@@ -17,6 +17,9 @@ import java.io.OutputStreamWriter;
 import java.io.*;
 import java.util.Objects;
 
+import static java.lang.Float.parseFloat;
+import static java.lang.Integer.parseInt;
+
 public class Lexical {
 
     private File file;                        //File to be read for input
@@ -37,7 +40,6 @@ public class Lexical {
     private ReserveTable mnemonics = new ReserveTable(50); //a few more than # reserves
     //global char
     char currCh;
-    int total;
 
     //constructor
     public Lexical(String filename, SymbolTable symbols, boolean echoOn) {
@@ -371,6 +373,11 @@ public class Lexical {
         return ((ch == ':') || (ch == '<') || (ch == '>') || (ch == '='));
     }
 
+    private boolean isArrow(char ch) {
+        return ((ch == '<') || (ch == '>'));
+    }
+
+
     //
     private boolean isSymbol(char ch) {
         return ((ch == '/') || (ch == '*') || (ch == '+')|| (ch == '-')|| (ch == '(')
@@ -378,8 +385,10 @@ public class Lexical {
                 || (ch == ']') || (ch == '.'));
     }
 
-    private boolean CheckSymbol(String ch){
-        return ((ch==":=") || (ch==">=") || (ch=="<=") || (ch=="<>"));
+    private boolean CheckSingleChars(String ch){
+        return ( ((ch.equals("/")) || (ch.equals("*")) || (ch.equals("+")) || (ch.equals("-") || (ch.equals("&")
+                || (ch.equals("%")) || (ch.equals("(")) || (ch.equals(")")) || (ch.equals(";")) || (ch.equals(","))
+                || (ch.equals("[")) || (ch.equals("]")) || (ch.equals(".") || (ch.equals("=")))))));
     }
 
 
@@ -399,7 +408,6 @@ public class Lexical {
         while (isLetter(ch)||(isDigit(ch)||(ch == '$')||(ch=='_'))) {
             result.lexeme += ch; //extend lexeme
             ch = GetNextChar();
-            total +=1 ;
         }
 
         updateCurrCh(ch);
@@ -451,29 +459,47 @@ public class Lexical {
                 updateCurrCh(ch);
                 return result;
             }
-
-
         }
-
         result.code = STRING_ID;
         updateCurrCh(ch); //Update position of Currch with respect to ch
 
         return result;
     }
 
-    // > < :
+
     private token getOneTwoChar(char ch) {
 
         token result = new token();
         result.lexeme = "" + ch; //have the first char
-        ch = GetNextChar();
-        while(isPrefix(ch) || isSymbol(ch)) {
-            total =+ 1;
-            result.lexeme = result.lexeme + ch;
 
-            if(CheckSymbol(result.lexeme))
-                break;
+        if(CheckSingleChars(result.lexeme)){
             ch = GetNextChar();
+            updateCurrCh(ch);
+            result.code = reserveWords.LookupName(result.lexeme);
+            return result;
+        }
+
+
+
+
+        ch = GetNextChar();
+
+        while(isPrefix(ch) || isSymbol(ch)) {
+
+
+
+            if(isArrow(ch)){
+                result.lexeme += ch;
+                if(result.lexeme.equals("<>") || result.lexeme.equals(">=") || result.lexeme.equals("<=")){
+                    ch = GetNextChar();
+                    break;
+                }
+            }
+            result.lexeme = result.lexeme + ch;
+            ch = GetNextChar();
+
+            if(result.lexeme.equals(":=")|| result.lexeme.equals(">=") || result.lexeme.equals("<="))
+                break;
         }
 
         updateCurrCh(ch); //Update position of Currch with respect to ch
@@ -505,7 +531,6 @@ public class Lexical {
                 if(result.lexeme.length() > maxIdentLength){
                     String temp = result.lexeme.substring(0, maxIdentLength);
                     System.out.println("Identifer length > 20, truncated " +result.lexeme +"to "+temp);
-                    result.lexeme = temp;
                 }
                 //Write to symbol Table
                 saveSymbols.AddSymbol(result.lexeme, 'v', 0);
@@ -522,7 +547,7 @@ public class Lexical {
                     return result;
                 }
                 //Write to Symbol Table (Symbol String, Char Kind, Value)
-                saveSymbols.AddSymbol(result.lexeme, 'c', new Integer(result.lexeme));
+                saveSymbols.AddSymbol(result.lexeme, 'c', parseInt(result.lexeme));
 
                 return result;
 
@@ -531,11 +556,11 @@ public class Lexical {
                 if(result.lexeme.length() > maxFloatLength){
                     String temp =  result.lexeme.substring(0, maxFloatLength);
                     System.out.println("Float length > 15, truncated "+result.lexeme+" to "+temp);
-                    saveSymbols.AddSymbol(result.lexeme, 'c', new Float(temp));
+                    saveSymbols.AddSymbol(result.lexeme, 'c', parseFloat(temp));
                     return result;
                 }
                 //Write to Symbol Table (Symbol String, Char Kind, Value)
-                saveSymbols.AddSymbol(result.lexeme, 'c', new Float(result.lexeme));
+                saveSymbols.AddSymbol(result.lexeme, 'c', parseFloat(result.lexeme));
                 return result;
 
             //String consists of double quotes (""), any chars except line-terminator, and won't excede EOF
@@ -556,7 +581,6 @@ public class Lexical {
         return result;
     }
 
-// numberic validation freebie code!
 
     // Checks to see if a string contains a valid DOUBLE
     public boolean doubleOK(String stin) {
@@ -576,7 +600,7 @@ public class Lexical {
         boolean result;
         int x;
         try {
-            x = Integer.parseInt(stin);
+            x = parseInt(stin);
             result = true;
         } catch (NumberFormatException ex) {
             result = false;
