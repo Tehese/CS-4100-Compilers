@@ -386,9 +386,9 @@ public class Lexical {
     }
 
     private boolean CheckSingleChars(String ch){
-        return ( ((ch.equals("/")) || (ch.equals("*")) || (ch.equals("+")) || (ch.equals("-") || (ch.equals("&")
-                || (ch.equals("%")) || (ch.equals("(")) || (ch.equals(")")) || (ch.equals(";")) || (ch.equals(","))
-                || (ch.equals("[")) || (ch.equals("]")) || (ch.equals(".") || (ch.equals("=")))))));
+        return ( ((ch.equals("/")) || (ch.equals("*")) || (ch.equals("+")) || (ch.equals("-")
+                 || (ch.equals("(")) || (ch.equals(")")) || (ch.equals(";")) || (ch.equals(","))
+                || (ch.equals("[")) || (ch.equals("]")) || (ch.equals(".") || (ch.equals("="))))));
     }
 
 
@@ -397,30 +397,30 @@ public class Lexical {
         return ch == '"';
     }
 
+    //Updates Current Position of Global currCh
     private void updateCurrCh(char ch){
         currCh = ch;
     }
-    // Student supplied methods
+
+    //Receives first char, and then parses through the correct functions to build the lexeme for the Identifer
     private token getIdent(char ch){
     //      int lookup = IDENT;
         token result = new token();
-
         while (isLetter(ch)||(isDigit(ch)||(ch == '$')||(ch=='_'))) {
             result.lexeme += ch; //extend lexeme
             ch = GetNextChar();
         }
 
-        updateCurrCh(ch);
+        updateCurrCh(ch); //Updates currCh
 
-    // end of token, lookup or IDENT
-        result.code = reserveWords.LookupName(result.lexeme);
+        result.code = reserveWords.LookupName(result.lexeme); //Defaults to -1 if the lexeme isn't in the reserveTable
         if (result.code == -1)
             result.code = IDENT_ID;
 
         return result;
     }
 
-    //
+    // Takes the first number in the form or a string, then compares it to the correct Manual Regex while/if statements
     private token getNumber(char ch) {
         token result = new token();
 
@@ -431,10 +431,12 @@ public class Lexical {
                result.code = FLOAT_ID;
            }
 
-           ch = GetNextChar(); //Update position of Currch with respect to ch
+           ch = GetNextChar();
        }
-        updateCurrCh(ch);
 
+        updateCurrCh(ch); //Updates position of currCh
+
+        //If the result.code wasn't set to Float set it to Int
         if (result.code != FLOAT_ID) {
             result.code = INTEGER_ID;
         }
@@ -442,8 +444,8 @@ public class Lexical {
 
     }
 
-    //"an unfinished string makes an error ;
 
+    //Gets the first Double quotation mark, then parses through till it sees another double quote or a new line
     private token getString(char ch) {
         token result = new token();
         result.lexeme = "";
@@ -453,7 +455,7 @@ public class Lexical {
             result.lexeme += ch;
             ch = GetNextChar();
 
-            if(isNewLine(ch)) {
+            if(isNewLine(ch)) { //Error
                 result.code = UNKNOWN_CHAR;
                 System.out.println("Unterminated String");
                 updateCurrCh(ch);
@@ -461,14 +463,16 @@ public class Lexical {
             }
         }
         result.code = STRING_ID;
+        ch = GetNextChar();
         updateCurrCh(ch); //Update position of Currch with respect to ch
 
         return result;
     }
 
 
+    //Throws the input character into the Token Lexeme, then checks it against single cases with no other possiblities. After that it grabs the next character and checks for arrow cases, then colon cases with equal signs
     private token getOneTwoChar(char ch) {
-
+        int total = 0; //Tracker to keep track of how many times we go into the while loop in order to keep track of whether or not getNextChar after a single char was found
         token result = new token();
         result.lexeme = "" + ch; //have the first char
 
@@ -479,29 +483,29 @@ public class Lexical {
             return result;
         }
 
-
-
-
-        ch = GetNextChar();
-
         while(isPrefix(ch) || isSymbol(ch)) {
+            total += 1;
+            ch = GetNextChar();
 
-
-
-            if(isArrow(ch)){
+            if(isArrow(ch)){ //Checks arrow cases
                 result.lexeme += ch;
                 if(result.lexeme.equals("<>") || result.lexeme.equals(">=") || result.lexeme.equals("<=")){
                     ch = GetNextChar();
                     break;
                 }
             }
-            result.lexeme = result.lexeme + ch;
-            ch = GetNextChar();
-
-            if(result.lexeme.equals(":=")|| result.lexeme.equals(">=") || result.lexeme.equals("<="))
+            if(result.lexeme.equals(":=")|| result.lexeme.equals(">=") || result.lexeme.equals("<=")) //Checks Equal Sign checks
                 break;
+            if(result.lexeme.equals(":")) //Checks for single colon after all previous tests
+                break;
+
+            result.lexeme = result.lexeme + ch;
+
         }
 
+        if(total == 0){
+            ch = GetNextChar();
+        }
         updateCurrCh(ch); //Update position of Currch with respect to ch
 
         result.code = reserveWords.LookupName(result.lexeme);
@@ -531,6 +535,8 @@ public class Lexical {
                 if(result.lexeme.length() > maxIdentLength){
                     String temp = result.lexeme.substring(0, maxIdentLength);
                     System.out.println("Identifer length > 20, truncated " +result.lexeme +"to "+temp);
+                    saveSymbols.AddSymbol(temp, 'v', 0);
+                    return result;
                 }
                 //Write to symbol Table
                 saveSymbols.AddSymbol(result.lexeme, 'v', 0);
@@ -543,7 +549,7 @@ public class Lexical {
                 if(result.lexeme.length() > maxIntLength){
                     String temp = result.lexeme.substring(0, maxIntLength);
                     System.out.println("Integer length > 15, truncated "+result.lexeme+" to "+temp);
-                    saveSymbols.AddSymbol(result.lexeme, 'c', 0);
+                    saveSymbols.AddSymbol(result.lexeme, 'c', parseInt(temp));
                     return result;
                 }
                 //Write to Symbol Table (Symbol String, Char Kind, Value)

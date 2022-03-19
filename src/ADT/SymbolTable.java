@@ -190,11 +190,11 @@ public class SymbolTable {
         for (int i = 0; i <total; i++){
 
             if(values[i] instanceof Integer) { //Checking to see if the Object is of type Integer
-                outputList.printf(i +"| "+"%15s | %c | %c | %d\n", names[i], kinds[i], data_type[i], (int) values[i]);
+                outputList.printf(i +"| "+"%-15s | %c | %c | %d\n", names[i], kinds[i], data_type[i], (int) values[i]);
             }else if ( values[i] instanceof  Float){ //Checking to see if Object is of type Float
-                outputList.printf(i +"| "+"%15s | %c | %c | %.1f\n", names[i], kinds[i], data_type[i], (float) values[i]);
+                outputList.printf(i +"| "+"%-15s | %c | %c | %f\n", names[i], kinds[i], data_type[i], (float) values[i]);
             }else if ( values[i] instanceof String){ //Checking to see if the Object is of type String
-                outputList.printf(i +"| "+"%15s | %c | %c | %s\n", names[i], kinds[i], data_type[i],  values[i].toString());
+                outputList.printf(i +"| "+"%-15s | %c | %c | %s\n", names[i], kinds[i], data_type[i],  values[i].toString());
             }
         }
         outputList.close(); //Closes the file so writing is complete
