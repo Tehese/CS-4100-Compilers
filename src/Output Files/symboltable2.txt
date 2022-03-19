@@ -3,29 +3,22 @@
 2| b               | v | i | 0
 3| a               | v | i | 0
 4| c               | v | i | 0
-5| 21.7            | c | f | 21.700001
 6| 22              | c | i | 22
-7| 123456789112345 | c | i | 123456
-8| 12.34567891134567 | c | f | 12.345679
+7| 123456          | c | i | 0
 9| hereisareallylongide | v | i | 0
 10| 200             | c | i | 200
-11| 76.5E-12        | c | f | 0.000000
-12| 109.E+10        | c | f | 1089999994880.000000
-13| 12.33E5         | c | f | 1233000.000000
-14| 12.4            | c | f | 12.400000
 15| E               | v | i | 0
 16| 2               | c | i | 2
 17| myString_1      | v | i | 0
 18| some            | v | i | 0
 19| more            | v | i | 0
-20| but first is a good string | s | s | but first is a good string
+20| but first is a good string | c | s | but first is a good string
 21| JumpOut         | v | i | 0
 22| not             | v | i | 0
 23| that            | v | i | 0
 24| nothing         | v | i | 0
 25| I               | v | i | 0
 26| 1               | c | i | 1
-27| 100.E7          | c | f | 1000000000.000000
 28| WRITELN         | v | i | 0
 29| declare         | v | i | 0
 30| WHILE           | v | i | 0
@@ -35,6 +28,5 @@
 34| does            | v | i | 0
 35| sum             | v | i | 0
 36| What            | v | i | 0
-37| 2.              | c | f | 2.000000
 38| is              | v | i | 0
 39| found           | v | i | 0

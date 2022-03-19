@@ -522,68 +522,66 @@ public class Lexical {
     private final int INTEGER_ID = 51;
     private final int FLOAT_ID = 52;
     private final int STRING_ID = 53;
-    private int maxIdentLength = 20;
-    private int maxIntLength = 6;
-    private int maxFloatLength = 12;
+
+    private final int MAX_IDENT_LENGTH = 20;
+    private final int MAX_INT_LENGTH = 6;
+    private final int MAX_FLOAT_LENGTH = 12;
 
     //Checks the length of the corresponding value, and truncates it if it is to long
-    public token checkTruncate(token result) {
-        switch (result.code) {
+    public token checkTruncate(token result){
+        // truncate if needed
+        int ival = 0;
+        double dval = 0.0;
+        int len = result.lexeme.length();
+        String lexemetrunc = result.lexeme;
 
-            //Token Code 50, truncate if length > 20 to 20
-            case IDENT_ID:
-                if(result.lexeme.length() > maxIdentLength){
-                    String temp = result.lexeme.substring(0, maxIdentLength);
-                    System.out.println("Identifer length > 20, truncated " +result.lexeme +"to "+temp);
-                    saveSymbols.AddSymbol(temp, 'v', 0);
-                    return result;
-                }
-                //Write to symbol Table
-                saveSymbols.AddSymbol(result.lexeme, 'v', 0);
-
-                return result;
-
-
-            //Token Code 51, truncate if length is > 15 to 15
+        switch (result.code)
+        {
+            case IDENT_ID:  if (len > MAX_IDENT_LENGTH) {
+                lexemetrunc = result.lexeme.substring(0,MAX_IDENT_LENGTH);
+                System.out.println("Identifier length > "+MAX_IDENT_LENGTH+", truncated "+result.lexeme+
+                        " to "+lexemetrunc);
+            }
+                saveSymbols.AddSymbol(lexemetrunc,'v',0);
+                break;
             case INTEGER_ID:
-                if(result.lexeme.length() > maxIntLength){
-                    String temp = result.lexeme.substring(0, maxIntLength);
-                    System.out.println("Integer length > 15, truncated "+result.lexeme+" to "+temp);
-                    saveSymbols.AddSymbol(result.lexeme, 'c', parseInt(temp));
-                    return result;
+                if (len > MAX_INT_LENGTH) {
+                    lexemetrunc = result.lexeme.substring(0,MAX_INT_LENGTH);
+                    System.out.println("Integer length > "+MAX_INT_LENGTH+", truncated "+result.lexeme+
+                            " to "+lexemetrunc);
+                    ival = 0;
                 }
-                //Write to Symbol Table (Symbol String, Char Kind, Value)
-                saveSymbols.AddSymbol(result.lexeme, 'c', parseInt(result.lexeme));
-
-                return result;
-
-            //Token Code 52, truncate if length is > 15 to 15
+                else //no trun, but is it ok
+                {if (integerOK(result.lexeme)) {
+                    ival =Integer.valueOf(lexemetrunc);}
+                else {
+                    System.out.println("Invalid integer value");
+                }
+                }
+                saveSymbols.AddSymbol(lexemetrunc,'c',ival);
+                break;
             case FLOAT_ID:
-                if(result.lexeme.length() > maxFloatLength){
-                    String temp =  result.lexeme.substring(0, maxFloatLength);
-                    System.out.println("Float length > 15, truncated "+result.lexeme+" to "+temp);
-                    saveSymbols.AddSymbol(result.lexeme, 'c', parseFloat(temp));
-                    return result;
+                if (len > MAX_FLOAT_LENGTH) {
+                    lexemetrunc = result.lexeme.substring(0,MAX_FLOAT_LENGTH);
+                    System.out.println("Float length > "+MAX_FLOAT_LENGTH+", truncated "+result.lexeme+
+                            " to "+lexemetrunc);
+                    dval = 0;
                 }
-                //Write to Symbol Table (Symbol String, Char Kind, Value)
-                saveSymbols.AddSymbol(result.lexeme, 'c', parseFloat(result.lexeme));
-                return result;
-
-            //String consists of double quotes (""), any chars except line-terminator, and won't excede EOF
-
-            case STRING_ID:
-
-                if(result.code == UNKNOWN_CHAR){
-                    System.out.println("Unterminated String");
-                }else{
-                    saveSymbols.AddSymbol(result.lexeme, 's', result.lexeme);
+                else //no trun, but is it ok
+                {if (doubleOK(result.lexeme))
+                    dval = Double.valueOf(lexemetrunc);
+                else {
+                    System.out.println("Invalid float value");
                 }
+                }
+                saveSymbols.AddSymbol(lexemetrunc,'c',dval);
+                break;
 
-                return result;
-
-            default:
-                break; //don't add
+            case STRING_ID: saveSymbols.AddSymbol(result.lexeme,'c', result.lexeme);
+                break;
+            default:  break; //don't add
         }
+
         return result;
     }
 

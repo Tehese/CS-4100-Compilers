@@ -20,7 +20,7 @@ hereisareallylongidentifierthatistoolong := 200;
    *) {<-- Orphaned cloed comment is just '*' and ')' returned as separate tokens}
            myString_1 : = "an unfinished string makes an error ;
   (*test single #and two char tokens *)
-     # /*^&%+-  some more (   ) (**) ;:=><>=<==<>,[]:.
+     # /*^&%+-  some more (   ) (**) ;:=<>=<==<>,[]:.
 (*reserve words 
 below........................... *)  "but first is a good string"
   GO_TO JumpOut;  INTEGER TO DOWHILE

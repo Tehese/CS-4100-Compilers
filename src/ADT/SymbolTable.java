@@ -40,7 +40,7 @@ public class SymbolTable {
                     return i;
             }
             //If the symbol did not exist, create it, and add it to the list.
-            values[total] = new Integer(value);
+            values[total] = Integer.valueOf(value);
             names[total] = symbol;
             kinds[total] = kind;
             data_type[total] = 'i';
@@ -62,7 +62,7 @@ public class SymbolTable {
                     return i;
             }
             //If the symbol did not exist, create it, and add it to the list.
-            values[total] = new Float(value);
+            values[total] = Double.valueOf(value);
             names[total] = symbol;
             kinds[total] = kind;
             data_type[total] = 'f';
@@ -139,13 +139,13 @@ public class SymbolTable {
     // Updates the Table at the correct index
     public void UpdateSymbol(int index, char kind, int value){
         //Updates the Table at the correct Index
-        values[index] = new Integer(value);
+        values[index] = Integer.valueOf(value);
         kinds[index] = kind;
     }
 
     // Updates the Table at the correct index
     public void UpdateSymbol(int index, char kind, double value){
-        values[index] = new Float(value);
+        values[index] = Double.valueOf(value);
         kinds[index] = kind;
     }
 
