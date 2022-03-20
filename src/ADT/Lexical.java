@@ -373,18 +373,20 @@ public class Lexical {
         return ((ch == ':') || (ch == '<') || (ch == '>') || (ch == '='));
     }
 
+    //Checks if it's an arrow
     private boolean isArrow(char ch) {
         return ((ch == '<') || (ch == '>'));
     }
 
 
-    //
+    //Checks all symbols to one/two char
     private boolean isSymbol(char ch) {
         return ((ch == '/') || (ch == '*') || (ch == '+')|| (ch == '-')|| (ch == '(')
                 || (ch == ')') || (ch == ';') || (ch == '=') || (ch == ',') || (ch == '[')
                 || (ch == ']') || (ch == '.'));
     }
 
+    //Checks the only possible single char combinations
     private boolean CheckSingleChars(String ch){
         return ( ((ch.equals("/")) || (ch.equals("*")) || (ch.equals("+")) || (ch.equals("-")
                  || (ch.equals("(")) || (ch.equals(")")) || (ch.equals(";")) || (ch.equals(","))
@@ -476,6 +478,7 @@ public class Lexical {
         token result = new token();
         result.lexeme = "" + ch; //have the first char
 
+        //Checks single character combinations
         if(CheckSingleChars(result.lexeme)){
             ch = GetNextChar();
             updateCurrCh(ch);
@@ -494,6 +497,7 @@ public class Lexical {
                     break;
                 }
             }
+
             if(result.lexeme.equals(":=")|| result.lexeme.equals(">=") || result.lexeme.equals("<=")) //Checks Equal Sign checks
                 break;
             if(result.lexeme.equals(":")) //Checks for single colon after all previous tests
@@ -503,6 +507,7 @@ public class Lexical {
 
         }
 
+        //If it was a single case go to next char
         if(total == 0){
             ch = GetNextChar();
         }
@@ -527,7 +532,7 @@ public class Lexical {
     private final int MAX_INT_LENGTH = 6;
     private final int MAX_FLOAT_LENGTH = 12;
 
-    //Checks the length of the corresponding value, and truncates it if it is to long
+    //Checks the length of the corresponding value above
     public token checkTruncate(token result){
         // truncate if needed
         int ival = 0;
