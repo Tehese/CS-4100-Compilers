@@ -5,12 +5,15 @@ public class main {
     public static void main(String[] args) {
 
             System.out.println("Scott Canfield\n");
+            System.out.println("Last 4 of Student ID: 2339");
+            System.out.print("CS4100 Spring 2022 Compiler = IntellJ");
+
 
 
             // /Users/tehese/IdeaProjects/CS-4100-Compilers/src/Test Files/LexicalTestSP22.txt MAC FILE ADDRESS
             // C:\Users\someb\JavaProjects\CS4100_Compilers\src\Test Files\LexicalTestSP22.txt PC FILE ADDRESS
 
-            String fileAndPath = "C:\\Users\\someb\\JavaProjects\\CS4100_Compilers\\src\\Test Files\\LexicalTestSP22.txt";
+            String fileAndPath = "/Users/tehese/IdeaProjects/CS-4100-Compilers/src/Test Files/LexicalTestSP22.txt";
             System.out.println("Lexical for " + fileAndPath);
             boolean traceOn = true;
             // Create a symbol table to store appropriate3 symbols found
@@ -30,7 +33,7 @@ public class main {
             // /Users/tehese/IdeaProjects/CS-4100-Compilers/src/Output Files/symboltable2.txt MAC File Address
             // C:\Users\someb\JavaProjects\CS4100_Compilers\src\Output Files\symboltable2.txt PC File Address
             
-            symbolList.PrintSymbolTable("C:\\Users\\someb\\JavaProjects\\CS4100_Compilers\\src\\Output Files\\symboltable2.txt");
+            symbolList.PrintSymbolTable("/Users/tehese/IdeaProjects/CS-4100-Compilers/src/Output Files/symboltable2.txt");
             System.out.println("Done.");
     }
 }
