@@ -438,7 +438,7 @@ public class Lexical {
 
         updateCurrCh(ch); //Updates position of currCh
 
-        //If the result.code wasn't set to Float set it to Int
+        //If the result.code wasn't set to Float else set it to Int
         if (result.code != FLOAT_ID) {
             result.code = INTEGER_ID;
         }
@@ -554,32 +554,35 @@ public class Lexical {
                     lexemetrunc = result.lexeme.substring(0,MAX_INT_LENGTH);
                     System.out.println("Integer length > "+MAX_INT_LENGTH+", truncated "+result.lexeme+
                             " to "+lexemetrunc);
-                    ival = 0;
+                    ival = Integer.valueOf(lexemetrunc);
                 }
                 else //no trun, but is it ok
-                {if (integerOK(result.lexeme)) {
+                if (integerOK(result.lexeme)) {
                     ival =Integer.valueOf(lexemetrunc);}
                 else {
                     System.out.println("Invalid integer value");
                 }
-                }
-                saveSymbols.AddSymbol(lexemetrunc,'c',ival);
+
+                saveSymbols.AddSymbol(lexemetrunc,'c', ival);
+
                 break;
+
             case FLOAT_ID:
                 if (len > MAX_FLOAT_LENGTH) {
                     lexemetrunc = result.lexeme.substring(0,MAX_FLOAT_LENGTH);
                     System.out.println("Float length > "+MAX_FLOAT_LENGTH+", truncated "+result.lexeme+
                             " to "+lexemetrunc);
-                    dval = 0;
+                    dval = Double.valueOf(lexemetrunc);
                 }
                 else //no trun, but is it ok
-                {if (doubleOK(result.lexeme))
+                if (doubleOK(result.lexeme))
                     dval = Double.valueOf(lexemetrunc);
                 else {
                     System.out.println("Invalid float value");
                 }
-                }
+
                 saveSymbols.AddSymbol(lexemetrunc,'c',dval);
+
                 break;
 
             case STRING_ID: saveSymbols.AddSymbol(result.lexeme,'c', result.lexeme);

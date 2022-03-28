@@ -133,9 +133,7 @@ public class SymbolTable {
     }
 
     //Returns the float
-    public double GetFloat(int index) {
-        return (double) values[index];
-    }
+    public double GetFloat(int index) {return (float) values[index];}
 
     // Updates the Table at the correct index
     public void UpdateSymbol(int index, char kind, int value) {
@@ -145,8 +143,8 @@ public class SymbolTable {
     }
 
     // Updates the Table at the correct index
-    public void UpdateSymbol(int index, char kind, double value) {
-        values[index] = Double.valueOf(value);
+    public void UpdateSymbol(int index, char kind, float value) {
+        values[index] = Float.valueOf(value);
         kinds[index] = kind;
     }
 
@@ -190,12 +188,12 @@ public class SymbolTable {
         //Prints only the filled in spaces, and also prints based on what the type on Value is
         for (int i = 0; i < total; i++) {
 
-            if (values[i] instanceof Integer) { //Checking to see if the Object is of type Integer
-                outputList.printf(i + "| " + "%-15s | %c | %c | %d\n", names[i], kinds[i], data_type[i], (int) values[i]);
+            if (values[i] instanceof String) { //Checking to see if the Object is of type Integer
+                outputList.printf("%02d" + "| " + "%-15s | %c | %c | %s\n",i, names[i], kinds[i], data_type[i], values[i].toString());
             } else if (values[i] instanceof Double) { //Checking to see if Object is of type Float
-                outputList.printf(i + "| " + "%-15s | %c | %c | %.1f\n", names[i], kinds[i], data_type[i], (double) values[i]);
-            } else if (values[i] instanceof String) { //Checking to see if the Object is of type String
-                outputList.printf(i + "| " + "%-15s | %c | %c | %s\n", names[i], kinds[i], data_type[i], values[i].toString());
+                outputList.printf("%02d" + "| " + "%-15s | %c | %c | %g\n",i, names[i], kinds[i], data_type[i], values[i]);
+            } else if (values[i] instanceof Integer) { //Checking to see if the Object is of type String
+                outputList.printf("%02d" + "| " + "%-15s | %c | %c | %d\n",i, names[i], kinds[i], data_type[i], values[i]);
             }
         }
             outputList.close(); //Closes the file so writing is complete
