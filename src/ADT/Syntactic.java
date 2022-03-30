@@ -73,7 +73,7 @@ public class Syntactic {
         }
 
         // This non-term is used to uniquely mark the program identifier
-        if (token.code == lex.codeFor("IDNT")) {
+        if (token.code == lex.codeFor("IDENT")) {
             // Because this is the progIdentifier, it will get a 'p' type to prevent re-use as a var
             symbolList.UpdateSymbol(symbolList.LookupSymbol(token.lexeme), 'p', 0);
             //move on
@@ -89,26 +89,26 @@ public class Syntactic {
             return -1;
         }
         trace("Program", true);
-        if (token.code == lex.codeFor("PROG")) {
+        if (token.code == lex.codeFor("PRGRM")) {
             token = lex.GetNextToken();
             recur = ProgIdentifier();
-            if (token.code == lex.codeFor("SEMI")) {
+            if (token.code == lex.codeFor("SCOLN")) {
                 token = lex.GetNextToken();
                 recur = Block();
-                if (token.code == lex.codeFor("PERD")) {
+                if (token.code == lex.codeFor("PEROD")) {
                     if (!anyErrors) {
                         System.out.println("Success.");
                     } else {
                         System.out.println("Compilation failed.");
                     }
                 } else {
-                    error(lex.reserveFor("PERD"), token.lexeme);
+                    error(lex.reserveFor("PEROD"), token.lexeme);
                 }
             } else {
-                error(lex.reserveFor("SEMI"), token.lexeme);
+                error(lex.reserveFor("SCOLN"), token.lexeme);
             }
         } else {
-            error(lex.reserveFor("PROG"), token.lexeme);
+            error(lex.reserveFor("PRGRM"), token.lexeme);
         }
         trace("Program", false);
         return recur;
@@ -122,26 +122,85 @@ public class Syntactic {
         }
         trace("Block", true);
 
-        if (token.code == lex.codeFor("BGIN")) {
+        if (token.code == lex.codeFor("BEGIN")) {
             token = lex.GetNextToken();
             recur = Statement();
-            while ((token.code == lex.codeFor("SEMI")) && (!lex.EOF()) && (!anyErrors)) {
+            while ((token.code == lex.codeFor("SCOLN")) && (!lex.EOF()) && (!anyErrors)) {
                 token = lex.GetNextToken();
                 recur = Statement();
             }
-            if (token.code == lex.codeFor("END_")) {
+            if (token.code == lex.codeFor("_END_")) {
                 token = lex.GetNextToken();
             } else {
-                error(lex.reserveFor("END_"), token.lexeme);
+                error(lex.reserveFor("_END_"), token.lexeme);
             }
 
         } else {
-            error(lex.reserveFor("BGIN"), token.lexeme);
+            error(lex.reserveFor("BEGIN"), token.lexeme);
         }
 
         trace("Block", false);
         return recur;
     }
+
+    /*
+    mnemonics.Add("GOTO_", 0);
+        mnemonics.Add("INTGE", 1);
+        mnemonics.Add("_T_O_", 2);
+        mnemonics.Add("_D_O_", 3);
+        mnemonics.Add("_I_F_", 4);
+        mnemonics.Add("THEN_", 5);
+        mnemonics.Add("ELSE_", 6);
+        mnemonics.Add("F_O_R", 7);
+        mnemonics.Add("_O_F_", 8);
+        mnemonics.Add("PRTLN", 9);
+        mnemonics.Add("READL", 10);
+        mnemonics.Add("BEGIN", 11);
+        mnemonics.Add("_END_", 12);
+        mnemonics.Add("_VAR_", 13);
+        mnemonics.Add("DWHLE", 14);
+        mnemonics.Add("PRGRM", 15);
+        mnemonics.Add("LABEL", 16);
+        mnemonics.Add("RPEAT", 17);
+        mnemonics.Add("UNTIL", 18);
+        mnemonics.Add("PROCD", 19);
+        mnemonics.Add("DOWNT", 20);
+        mnemonics.Add("FUNCT", 21);
+        mnemonics.Add("RTURN", 22);
+        mnemonics.Add("FLOAT", 23);
+        mnemonics.Add("STRNG", 24);
+        mnemonics.Add("ARRAY", 25);
+
+        // 1 or 2 char mnemonics
+        mnemonics.Add("SLASH", 30);
+        mnemonics.Add("STAR_", 31);
+        mnemonics.Add("PLUS_", 32);
+        mnemonics.Add("DASH_", 33);
+        mnemonics.Add("LPARA", 34);
+        mnemonics.Add("RPARA", 35);
+        mnemonics.Add("SCOLN", 36);
+        mnemonics.Add("ASNMT", 37);
+        mnemonics.Add("GRTH>", 38);
+        mnemonics.Add("LESS<", 39);
+        mnemonics.Add("GROR=", 40);
+        mnemonics.Add("LSOR=", 41);
+        mnemonics.Add("EQUAL", 42);
+        mnemonics.Add("NEQUL", 43);
+        mnemonics.Add("COMMA", 44);
+        mnemonics.Add("RBRAK", 45);
+        mnemonics.Add("LBRAK", 46);
+        mnemonics.Add("COLON", 47);
+        mnemonics.Add("PEROD", 48);
+        mnemonics.Add("IDENT", 50);
+        mnemonics.Add("NCINT", 51);
+        mnemonics.Add("FCINT", 52);
+        mnemonics.Add("STRGC", 53);
+
+
+        //Anything else
+        mnemonics.Add("UNKWN", 99);
+
+     */
 
     //Not a NT, but used to shorten Statement code body
     //<variable> $COLON-EQUALS <simple expression>
@@ -154,11 +213,11 @@ public class Syntactic {
         //have ident already in order to get to here, handle as Variable
         recur = Variable();  //Variable moves ahead, next token ready
 
-        if (token.code == lex.codeFor("ASGN")) {
+        if (token.code == lex.codeFor("ASNMT")) {
             token = lex.GetNextToken();
             recur = SimpleExpression();
         } else {
-            error(lex.reserveFor("ASGN"), token.lexeme);
+            error(lex.reserveFor("ASNMT"), token.lexeme);
         }
 
         trace("handleAssignment", false);
@@ -176,7 +235,7 @@ public class Syntactic {
         }
 
         trace("SimpleExpression", true);
-        if (token.code == lex.codeFor("IDNT")) {
+        if (token.code == lex.codeFor("IDENT")) {
             token = lex.GetNextToken();
         }
         trace("SimpleExpression", false);
@@ -192,10 +251,10 @@ public class Syntactic {
 
         trace("Statement", true);
 
-        if (token.code == lex.codeFor("IDNT")) {  //must be an ASSUGNMENT
+        if (token.code == lex.codeFor("IDENT")) {  //must be an ASSUGNMENT
             recur = handleAssignment();
         } else {
-            if (token.code == lex.codeFor("_IF_")) {  //must be an ASSUGNMENT
+            if (token.code == lex.codeFor("_I_f_") {  //must be an ASSUGNMENT
                 // this would handle the rest of the IF statment IN PART B
             } else // if/elses should look for the other possible statement starts...
             //  but not until PART B
