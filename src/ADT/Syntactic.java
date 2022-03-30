@@ -1,39 +1,27 @@
 /*
-STUDENTS MUST CHANGE THE 4-CHAR MNEMONICS HERE TO THEIR OWN 5-CHAR MNEMONICS
-SAMPLE syntactic CODE FOR SP22 Compiler Class.
+Scott Canfield
+CS4100 Compilers Spring 2022
+Last 4 Student ID: 2339
+UCCS
 
 See TEMPLATE at end of this file for the framework to be used for
 ALL non-terminal methods created.
 
-Two methods shown below are added to LEXICAL, where reserve and mnemonic
-tables are accessible:
+CFG below, the following conventions are used:
 
-Returns the integer token code for the given mnemonic
-public int codeFor(String mnemonic){
-    return mnemonics.LookupName(mnemonic);
-}
-Returns the Reserve Word for the given mnemonic
-public String reserveFor(String mnemonic){
-    return reserveWords.LookupCode(mnemonics.LookupName(mnemonic));
-}
-
-Allows control of whether tokens are printed within Lexical or not
-public void setPrintToken(boolean on){
-    printToken = on;
-}
-
-Add 2 lines which prints each token found by GetNextToken:
-            if (printToken) {
-                System.out.println("\t" + result.mnemonic + " | \t" + String.format("%04d", result.code) + " | \t" + result.lexeme);
-            }
+1) Anything prefaced by a $ is a terminal token (symbol or reserved word); anything
+inside of <> pointy brackets is a non-terminal
+2) An item enclosed in ‘[‘,’]’ square braces is optional
+3) An item enclosed in ‘{‘,’}’ curly braces is repeatable; ‘*’ is ‘0 or more times’, while ‘+’ is
+‘1 or more times’
+4) Vertical bars, ‘|’, are OR connectors; any one of the items they separate may be
+selected
+5) Note that all named elements of the form $SOMETHING are token codes for terminals
+which are defined for this language and returned by the lexical analyzer.
 
  */
 package ADT;
 
-/**
- *
- * @author abrouill
- */
 public class Syntactic {
 
     private String filein;              //The full file path to input file
@@ -143,65 +131,6 @@ public class Syntactic {
         return recur;
     }
 
-    /*
-    mnemonics.Add("GOTO_", 0);
-        mnemonics.Add("INTGE", 1);
-        mnemonics.Add("_T_O_", 2);
-        mnemonics.Add("_D_O_", 3);
-        mnemonics.Add("_I_F_", 4);
-        mnemonics.Add("THEN_", 5);
-        mnemonics.Add("ELSE_", 6);
-        mnemonics.Add("F_O_R", 7);
-        mnemonics.Add("_O_F_", 8);
-        mnemonics.Add("PRTLN", 9);
-        mnemonics.Add("READL", 10);
-        mnemonics.Add("BEGIN", 11);
-        mnemonics.Add("_END_", 12);
-        mnemonics.Add("_VAR_", 13);
-        mnemonics.Add("DWHLE", 14);
-        mnemonics.Add("PRGRM", 15);
-        mnemonics.Add("LABEL", 16);
-        mnemonics.Add("RPEAT", 17);
-        mnemonics.Add("UNTIL", 18);
-        mnemonics.Add("PROCD", 19);
-        mnemonics.Add("DOWNT", 20);
-        mnemonics.Add("FUNCT", 21);
-        mnemonics.Add("RTURN", 22);
-        mnemonics.Add("FLOAT", 23);
-        mnemonics.Add("STRNG", 24);
-        mnemonics.Add("ARRAY", 25);
-
-        // 1 or 2 char mnemonics
-        mnemonics.Add("SLASH", 30);
-        mnemonics.Add("STAR_", 31);
-        mnemonics.Add("PLUS_", 32);
-        mnemonics.Add("DASH_", 33);
-        mnemonics.Add("LPARA", 34);
-        mnemonics.Add("RPARA", 35);
-        mnemonics.Add("SCOLN", 36);
-        mnemonics.Add("ASNMT", 37);
-        mnemonics.Add("GRTH>", 38);
-        mnemonics.Add("LESS<", 39);
-        mnemonics.Add("GROR=", 40);
-        mnemonics.Add("LSOR=", 41);
-        mnemonics.Add("EQUAL", 42);
-        mnemonics.Add("NEQUL", 43);
-        mnemonics.Add("COMMA", 44);
-        mnemonics.Add("RBRAK", 45);
-        mnemonics.Add("LBRAK", 46);
-        mnemonics.Add("COLON", 47);
-        mnemonics.Add("PEROD", 48);
-        mnemonics.Add("IDENT", 50);
-        mnemonics.Add("NCINT", 51);
-        mnemonics.Add("FCINT", 52);
-        mnemonics.Add("STRGC", 53);
-
-
-        //Anything else
-        mnemonics.Add("UNKWN", 99);
-
-     */
-
     //Not a NT, but used to shorten Statement code body
     //<variable> $COLON-EQUALS <simple expression>
     private int handleAssignment() {
@@ -211,7 +140,8 @@ public class Syntactic {
         }
         trace("handleAssignment", true);
         //have ident already in order to get to here, handle as Variable
-        recur = Variable();  //Variable moves ahead, next token ready
+        //recur = Variable();  //Variable moves ahead, next token ready
+        recur = Program();  //Variable moves ahead, next token ready
 
         if (token.code == lex.codeFor("ASNMT")) {
             token = lex.GetNextToken();
@@ -254,7 +184,7 @@ public class Syntactic {
         if (token.code == lex.codeFor("IDENT")) {  //must be an ASSUGNMENT
             recur = handleAssignment();
         } else {
-            if (token.code == lex.codeFor("_I_f_") {  //must be an ASSUGNMENT
+            if (token.code == lex.codeFor("_I_f_")){  //must be an ASSUGNMENT
                 // this would handle the rest of the IF statment IN PART B
             } else // if/elses should look for the other possible statement starts...
             //  but not until PART B
@@ -313,19 +243,19 @@ public class Syntactic {
         return result;
     }
 
-/*  Template for all the non-terminal method bodies
-private int exampleNonTerminal(){
-        int recur = 0;
-        if (anyErrors) {
-            return -1;
-        }
+  //Template for all the non-terminal method bodies
+    private int exampleNonTerminal(){
+            int recur = 0;
+            if (anyErrors) {
+                return -1;
+            }
 
-        trace("NameOfThisMethod", true);
-// unique non-terminal stuff
-        trace("NameOfThisMethod", false);
-        return recur;
+            trace("NameOfThisMethod", true);
+    // unique non-terminal stuff
+            trace("NameOfThisMethod", false);
+            return recur;
 
-}
+    }
 
-    */
+
 }

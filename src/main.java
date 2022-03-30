@@ -13,7 +13,7 @@ public class main {
         System.out.println("Last 4 of Student Id: 2339");
         System.out.println("CS 4100 Compilers");
         System.out.println("Spring 2022");
-        System.out.println("IDE: IntelliJ");
+        System.out.println("IDE: IntelliJ\n");
 
         String filePath = "/Users/tehese/IdeaProjects/CS-4100-Compilers/src/Test Files/GoodSyntaxASP22.txt";
         boolean traceon = true;
