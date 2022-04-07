@@ -496,6 +496,9 @@ public class Lexical {
                     ch = GetNextChar();
                     break;
                 }
+            }else if(ch == '='){
+                result.lexeme += ch;
+                ch=GetNextChar();
             }
 
             if(result.lexeme.equals(":=")|| result.lexeme.equals(">=") || result.lexeme.equals("<=")) //Checks Equal Sign checks

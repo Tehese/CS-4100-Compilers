@@ -141,7 +141,7 @@ public class Syntactic {
         trace("handleAssignment", true);
         //have ident already in order to get to here, handle as Variable
         //recur = Variable();  //Variable moves ahead, next token ready
-        recur = Program();  //Variable moves ahead, next token ready
+        recur = Variable();  //Variable moves ahead, next token ready
 
         if (token.code == lex.codeFor("ASNMT")) {
             token = lex.GetNextToken();
@@ -167,6 +167,10 @@ public class Syntactic {
         trace("SimpleExpression", true);
         if (token.code == lex.codeFor("IDENT")) {
             token = lex.GetNextToken();
+        }else if (token.code == lex.codeFor("LPARA")){
+            recur = Term();
+        }else if (token.code == lex.codeFor("NCINT")){
+            recur = Factor();
         }
         trace("SimpleExpression", false);
         return recur;
@@ -181,11 +185,12 @@ public class Syntactic {
 
         trace("Statement", true);
 
-        if (token.code == lex.codeFor("IDENT")) {  //must be an ASSUGNMENT
+        if (token.code == lex.codeFor("IDENT")) {  //must be an ASSIGNMENT
             recur = handleAssignment();
         } else {
-            if (token.code == lex.codeFor("_I_f_")){  //must be an ASSUGNMENT
-                // this would handle the rest of the IF statment IN PART B
+            if (token.code == lex.codeFor("_I_f_")){  //must be an ASSIGNMENT
+                // this would handle the rest of the IF statement IN PART B
+                // Use a switch to call each function
             } else // if/elses should look for the other possible statement starts...
             //  but not until PART B
             {
@@ -197,9 +202,6 @@ public class Syntactic {
         return recur;
     }
 
-    /**
-     * *************************************************
-     */
     /*     UTILITY FUNCTIONS USED THROUGHOUT THIS CLASS */
 // error provides a simple way to print an error statement to standard output
 //     and avoid reduncancy
@@ -250,6 +252,7 @@ public class Syntactic {
                 return -1;
             }
 
+            //Make Methods for all the non-terminals
             trace("NameOfThisMethod", true);
     // unique non-terminal stuff
             trace("NameOfThisMethod", false);
@@ -257,5 +260,168 @@ public class Syntactic {
 
     }
 
+    private int Variable() {
+        int recur = 0;
+        if (anyErrors) {
+            return -1;
+        }
+
+        trace("Variable", true);
+
+        if (token.code == lex.codeFor("IDENT")) {
+            token = lex.GetNextToken();
+        } else {
+            error(lex.reserveFor("IDENT"), token.lexeme);
+        }
+        trace("Variable", false);
+        return recur;
+    }
+
+    private int Factor() {
+        int recur = 0;
+        if (anyErrors) {
+            return -1;
+        }
+
+        trace("Factor", true);
+
+        if (token.code == lex.codeFor("IDENT")) {
+            token = lex.GetNextToken();
+        } else {
+            error(lex.reserveFor("IDENT"), token.lexeme);
+        }
+        trace("Factor", false);
+        return recur;
+    }
+
+    private int Term() {
+        int recur = 0;
+        if (anyErrors) {
+            return -1;
+        }
+
+        trace("Term", true);
+
+        if (token.code == lex.codeFor("LPARA")) {
+            token = lex.GetNextToken();
+        } else {
+            error(lex.reserveFor("IDENT"), token.lexeme);
+        }
+        trace("Term", false);
+        return recur;
+    }
+
+    private int UnsignedConstant() {
+        int recur = 0;
+        if (anyErrors) {
+            return -1;
+        }
+
+        trace("UnsignedConstant", true);
+
+        if (token.code == lex.codeFor("IDENT")) {
+            token = lex.GetNextToken();
+        } else {
+            error(lex.reserveFor("IDENT"), token.lexeme);
+        }
+        trace("UnsignedConstant", false);
+        return recur;
+    }
+
+    private int UnsignedNumber() {
+        int recur = 0;
+        if (anyErrors) {
+            return -1;
+        }
+
+        trace("UnsignedNumber", true);
+
+        if (token.code == lex.codeFor("IDENT")) {
+            token = lex.GetNextToken();
+        } else {
+            error(lex.reserveFor("IDENT"), token.lexeme);
+        }
+        trace("UnsignedNumber", false);
+        return recur;
+    }
+
+    private int Mulop() {
+        int recur = 0;
+        if (anyErrors) {
+            return -1;
+        }
+
+        trace("Mulop", true);
+
+        if (token.code == lex.codeFor("STAR_")) {
+            token = lex.GetNextToken();
+        } else {
+            error(lex.reserveFor("STAR_"), token.lexeme);
+        }
+        trace("Mulop", false);
+        return recur;
+    }
+
+    private int Addop() {
+        int recur = 0;
+        if (anyErrors) {
+            return -1;
+        }
+
+        trace("Addop", true);
+
+        if (token.code == lex.codeFor("PLUS_")) {
+            token = lex.GetNextToken();
+        } else {
+            error(lex.reserveFor("PLUS_"), token.lexeme);
+        }
+        trace("Addop", false);
+        return recur;
+    }
+
+    private int Sign() {
+        int recur = 0;
+        if (anyErrors) {
+            return -1;
+        }
+
+        trace("Addop", true);
+
+        if (token.code == lex.codeFor("PLUS_")) {
+            token = lex.GetNextToken();
+        } else {
+            error(lex.reserveFor("PLUS_"), token.lexeme);
+        }
+        trace("Addop", false);
+        return recur;
+    }
+
 
 }
+
+/*
+
+<variable> -> <identifier>
+<simple expression> -> [<sign>]  <term>  {<addop>  <term>}*
+<addop>
+<sign>
+<term>
+<mulop>
+-> $PLUS | $MINUS
+-> $PLUS | $MINUS
+-> <factor> {<mulop> <factor> }* -> $MULTIPLY | $DIVIDE
+Page 2 of 3
+<factor> ->
+<unsigned constant>->
+<unsigned number>->
+<identifier> ->
+<unsigned constant> |
+<variable> |
+$LPAR    <simple expression>    $RPAR
+<unsigned number>
+$FLOAT | $INTEGER
+**note: as defined for Lexical
+$IDENTIFIER
+**note: as defined for Lexical, which is
+        <letter>  {<letter> |<digit> | $ | _ }*
+ */

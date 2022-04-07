@@ -16,6 +16,7 @@ public class main {
         System.out.println("IDE: IntelliJ\n");
 
         String filePath = "/Users/tehese/IdeaProjects/CS-4100-Compilers/src/Test Files/GoodSyntaxASP22.txt";
+        //String filePath = "/Users/tehese/Desktop/School/Spring 2022/CS 4100 Compiler/Programming/Part3A_Syntax Analyzer/SyntaxAMiniTestSP22.txt";
         boolean traceon = true;
         Syntactic parser = new Syntactic(filePath, traceon);
         parser.parse();
