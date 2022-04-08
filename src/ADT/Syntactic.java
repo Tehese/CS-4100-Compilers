@@ -164,6 +164,7 @@ public class Syntactic {
         }
         trace("SimpleExpression", true);
 
+        //Checks for a + or - sign first
         if (token.code == lex.codeFor("SUBTR") || token.code == lex.codeFor("PLUS_")) {
             recur = Sign();
         }
@@ -172,6 +173,8 @@ public class Syntactic {
                 || token.code == lex.codeFor("IDENT")
                 || token.code == lex.codeFor("LPARA")){
             recur = Term();
+        } else {
+                error(lex.reserveFor("SimpleExpression"), token.lexeme);
         }
 
         //Checks for the possible repeating Addop Term
@@ -257,6 +260,7 @@ public class Syntactic {
     }
 
     //Checks for an <Identifer>
+    //Accoring to the CFG this is suppose to go into a redundant Identifer Function which does the same thing as thing.
     private int Variable() {
         int recur = 0;
         if (anyErrors) {
@@ -268,7 +272,7 @@ public class Syntactic {
         if (token.code == lex.codeFor("IDENT")) {
             token = lex.GetNextToken();
         } else {
-            error(lex.reserveFor("IDENT"), token.lexeme);
+            error(lex.reserveFor("Variable"), token.lexeme);
         }
         trace("Variable", false);
         return recur;
@@ -278,6 +282,7 @@ public class Syntactic {
     //Checks for an Unsigned Constant | Variable | Lpar <Simple Expression> Rpar
     private int Factor() {
         int recur = 0;
+
         if (anyErrors) {
             return -1;
         }
@@ -296,15 +301,7 @@ public class Syntactic {
             if(token.code == lex.codeFor("RPARA"))
                 token = lex.GetNextToken();
         } else{
-
-            if(token.code == (lex.codeFor("FCINT"))){
-                error(lex.reserveFor("FCINT"), token.lexeme);
-            } else if(token.code == (lex.codeFor("NCINT"))){
-                error(lex.reserveFor("NCINT"), token.lexeme);
-            } else if(token.code == (lex.codeFor(("IDENT")))){
-                error(lex.reserveFor("IDENT"), token.lexeme);
-            }
-
+            error(lex.reserveFor("Factor"), token.lexeme);
         }
 
         trace("Factor", false);
@@ -326,16 +323,7 @@ public class Syntactic {
                 || token.code == lex.codeFor("LPARA")) {
                 recur = Factor();
         }  else {
-            //Handling Errors
-            if(token.code == lex.codeFor("FCINT")){
-                error(lex.reserveFor("FCINT"), token.lexeme);
-            } else if (token.code == lex.codeFor("NCINT")) {
-                error(lex.reserveFor("NCINT"), token.lexeme);
-            } else if (token.code == lex.codeFor("IDENT")) {
-                error(lex.reserveFor("IDENT"), token.lexeme);
-            } else if (token.code == lex.codeFor("LPARA")) {
-                error(lex.reserveFor("LPARA"), token.lexeme);
-            }
+                error(lex.reserveFor("Term"), token.lexeme);
         }
         //Checks for Possible repeating {Mulop Factors}
         while((token.code == lex.codeFor("MULTI") || token.code == lex.codeFor("DIVID"))){
@@ -362,10 +350,7 @@ public class Syntactic {
                 recur = UnsignedNumber();
             }else{
                 //Handling Errors
-                if(token.code == lex.codeFor("FCINT"))
-                    error(lex.reserveFor("FCINT"), token.lexeme);
-                if(token.code == lex.codeFor("NCINT"))
-                    error(lex.reserveFor("NCINT"), token.lexeme);
+                error(lex.reserveFor("UnsignedConstant"), token.lexeme);
             }
 
         trace("UnsignedConstant", false);
@@ -386,12 +371,7 @@ public class Syntactic {
             token = lex.GetNextToken();
         } else {
             //Handling Errors
-            if(token.code == lex.codeFor("NCINT")) {
-                error(lex.reserveFor("NCINT"), token.lexeme);
-            } else {
-                error(lex.reserveFor("FCINT"), token.lexeme);
-            }
-
+                error(lex.reserveFor("Unsigned Number"), token.lexeme);
         }
         trace("UnsignedNumber", false);
 
@@ -412,11 +392,7 @@ public class Syntactic {
         }else if (token.code == lex.codeFor("DIVID")) {
                 token = lex.GetNextToken();
             } else {
-                if(token.code == lex.codeFor("DIVID")){
-                    error(lex.reserveFor("DIVID"), token.lexeme);
-                }else{
-                    error(lex.reserveFor("MULTI"), token.lexeme);
-                }
+                error(lex.reserveFor("Mulop"), token.lexeme);
             }
 
         trace("Mulop", false);
@@ -437,11 +413,7 @@ public class Syntactic {
         }else if (token.code == lex.codeFor("SUBTR")) {
             token = lex.GetNextToken();
         } else {
-            if(token.code == lex.codeFor("PLUS_")){
-                error(lex.reserveFor("PLUS_"), token.lexeme);
-            }else{
-                error(lex.reserveFor("SUBTR"), token.lexeme);
-            }
+            error(lex.reserveFor("Addop"), token.lexeme);
         }
         trace("Addop", false);
         return recur;
@@ -461,11 +433,7 @@ public class Syntactic {
         }else if (token.code == lex.codeFor("SUBTR")) {
             token = lex.GetNextToken();
         } else {
-            if(token.code == lex.codeFor("PLUS_")){
-                error(lex.reserveFor("PLUS_"), token.lexeme);
-            }else{
-                error(lex.reserveFor("SUBTR"), token.lexeme);
-            }
+            error(lex.reserveFor("Sign"), token.lexeme);
         }
 
         trace("Sign", false);
