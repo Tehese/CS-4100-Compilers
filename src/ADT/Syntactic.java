@@ -462,44 +462,4 @@ public class Syntactic {
 
         return recur;
     }
-
-
-    private void checkErrors(Lexical.token token){
-        String word = token.mnemonic;
-
-        switch(word){
-            case "":
-
-        }
-
-
-    }
-
 }
-
-/*
-
-<variable> -> <identifier>
-<simple expression> -> [<sign>]  <term>  {<addop>  <term>}*
-<addop>
-<sign>
-<term>
-<mulop>
--> $PLUS | $MINUS
--> $PLUS | $MINUS
--> <factor> {<mulop> <factor> }* -> $MULTIPLY | $DIVIDE
-Page 2 of 3
-<factor> ->
-<unsigned constant>->
-<unsigned number>->
-<identifier> ->
-<unsigned constant> |
-<variable> |
-$LPAR    <simple expression>    $RPAR
-<unsigned number>
-$FLOAT | $INTEGER
-**note: as defined for Lexical
-$IDENTIFIER
-**note: as defined for Lexical, which is
-        <letter>  {<letter> |<digit> | $ | _ }*
- */
