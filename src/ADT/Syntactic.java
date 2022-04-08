@@ -20,24 +20,15 @@ selected
 which are defined for this language and returned by the lexical analyzer.
  */
 
-/*
-Program mytest;
-BEGIN
-count := total;
-a:=b
-END.
- */
 package ADT;
-
-import java.util.Objects;
 
 public class Syntactic {
 
-    private String filein;              //The full file path to input file
-    private SymbolTable symbolList;     //Symbol table storing ident/const
-    private Lexical lex;                //Lexical analyzer
+    private final String filein;              //The full file path to input file
+    private final SymbolTable symbolList;     //Symbol table storing ident/const
+    private final Lexical lex;                //Lexical analyzer
     private Lexical.token token;        //Next Token retrieved
-    private boolean traceon;            //Controls tracing mode
+    private final boolean traceon;            //Controls tracing mode
     private int level = 0;              //Controls indent for trace mode
     private boolean anyErrors;          //Set TRUE if an error happens
 
@@ -62,7 +53,7 @@ public class Syntactic {
         recur = Program();
     }
 
-    //Non Terminal
+    // Non-Terminal which looks for an Identifer and updates the Symboltable
     private int ProgIdentifier() {
         int recur = 0;
         if (anyErrors) {
@@ -79,7 +70,10 @@ public class Syntactic {
         return recur;
     }
 
-    //Non Terminals
+    /*
+     Checks for the beginning of a Program by looking for
+    Program Mneumonic then followed by the correct components
+    */
     private int Program() {
         int recur = 0;
         if (anyErrors) {
@@ -111,7 +105,7 @@ public class Syntactic {
         return recur;
     }
 
-    //Non Terminal Checking for Beginning and End
+    //Non-Terminal Checking for Beginning/End
     private int Block() {
         int recur = 0;
         if (anyErrors) {
@@ -161,7 +155,7 @@ public class Syntactic {
         return recur;
     }
 
-//Incomplete Needs to Check for [<sign>] <Term> {<addop> <term>}
+//Checks for [<sign>] <Term> {<addop> <term>}
     private int SimpleExpression() {
         int recur = 0;
         if (anyErrors) {
@@ -179,6 +173,7 @@ public class Syntactic {
             recur = Term();
         }
 
+        //Checks for the possible repeating Addop Term
         if((token.code == lex.codeFor("PLUS_") || token.code == lex.codeFor("SUBTR"))) {
 
             while ((token.code == lex.codeFor("PLUS_") || token.code == lex.codeFor("SUBTR"))) {
@@ -186,12 +181,12 @@ public class Syntactic {
                 recur = Term();
             }
         }
-        //if() Enter Errors
+
         trace("SimpleExpression", false);
         return recur;
     }
 
-    //Non Terminal
+    //Non Terminals, checks for IDENT and then IFS/WHILES/DOWHILES for part b
     private int Statement() {
         int recur = 0;
         if (anyErrors) {
@@ -260,7 +255,7 @@ public class Syntactic {
         return result;
     }
 
-
+    //Checks for an <Identifer>
     private int Variable() {
         int recur = 0;
         if (anyErrors) {
@@ -308,12 +303,6 @@ public class Syntactic {
             } else if(token.code == (lex.codeFor(("IDENT")))){
                 error(lex.reserveFor("IDENT"), token.lexeme);
             }
-            error(lex.reserveFor("NCINT"), token.lexeme);
-            error(lex.reserveFor("FCINT"), token.lexeme);
-            error(lex.reserveFor("IDENT"), token.lexeme);
-            error(lex.reserveFor("LPARA"), token.lexeme);
-            error(lex.reserveFor("RPARA"), token.lexeme);
-
 
         }
 
@@ -321,7 +310,7 @@ public class Syntactic {
         return recur;
     }
 
-
+//Checks for Factor Components followed up a possible repeating Mulop + Factor
     private int Term() {
         int recur = 0;
         if (anyErrors) {
@@ -330,18 +319,28 @@ public class Syntactic {
 
         trace("Term", true);
 
-        if(token.code == lex.codeFor("NCINT") || token.code == lex.codeFor("FCINT")){
-            recur = Factor();
-        } else if(token.code == (lex.codeFor("IDENT"))){
-            recur = Factor();
-        }else if(token.code == lex.codeFor("LPARA")){
-            recur = Factor();
+        if(token.code == lex.codeFor("NCINT")
+                || token.code == lex.codeFor("FCINT")
+                || token.code == lex.codeFor("IDENT")
+                || token.code == lex.codeFor("LPARA")) {
+                recur = Factor();
+        }  else {
+            //Handling Errors
+            if(token.code == lex.codeFor("FCINT")){
+                error(lex.reserveFor("FCINT"), token.lexeme);
+            } else if (token.code == lex.codeFor("NCINT")) {
+                error(lex.reserveFor("NCINT"), token.lexeme);
+            } else if (token.code == lex.codeFor("IDENT")) {
+                error(lex.reserveFor("IDENT"), token.lexeme);
+            } else if (token.code == lex.codeFor("LPARA")) {
+                error(lex.reserveFor("LPARA"), token.lexeme);
+            }
         }
+        //Checks for Possible repeating {Mulop Factors}
         while((token.code == lex.codeFor("MULTI") || token.code == lex.codeFor("DIVID"))){
             recur = Mulop();
             recur = Factor();
         }
-        //if(){ add errors
 
         trace("Term", false);
         return recur;
@@ -361,16 +360,19 @@ public class Syntactic {
         } else if(token.code == lex.codeFor("NCINT")) {
                 recur = UnsignedNumber();
             }else{
-                error(lex.reserveFor("NCINT"), token.lexeme);
+                //Handling Errors
+                if(token.code == lex.codeFor("FCINT"))
+                    error(lex.reserveFor("FCINT"), token.lexeme);
+                if(token.code == lex.codeFor("NCINT"))
+                    error(lex.reserveFor("NCINT"), token.lexeme);
             }
-
 
         trace("UnsignedConstant", false);
 
         return recur;
     }
 
-    //Checks the Mneunomic for the correct reference for a Integer or Float
+    //Checks the Mneunomic for the correct reference for an Integer or Float
     private int UnsignedNumber() {
         int recur = 0;
         if (anyErrors) {
@@ -382,7 +384,13 @@ public class Syntactic {
         if ((token.code == lex.codeFor("NCINT") || token.code == lex.codeFor("FCINT"))) {
             token = lex.GetNextToken();
         } else {
-            //add errors
+            //Handling Errors
+            if(token.code == lex.codeFor("NCINT")) {
+                error(lex.reserveFor("NCINT"), token.lexeme);
+            } else {
+                error(lex.reserveFor("FCINT"), token.lexeme);
+            }
+
         }
         trace("UnsignedNumber", false);
 
@@ -403,7 +411,7 @@ public class Syntactic {
         }else if (token.code == lex.codeFor("DIVID")) {
                 token = lex.GetNextToken();
             } else {
-                if(Objects.equals(lex.reserveFor("DIVID"), "DIVID")){
+                if(token.code == lex.codeFor("DIVID")){
                     error(lex.reserveFor("DIVID"), token.lexeme);
                 }else{
                     error(lex.reserveFor("MULTI"), token.lexeme);
@@ -428,7 +436,7 @@ public class Syntactic {
         }else if (token.code == lex.codeFor("SUBTR")) {
             token = lex.GetNextToken();
         } else {
-            if(Objects.equals(lex.reserveFor("PLUS_"), "PLUS_")){
+            if(token.code == lex.codeFor("PLUS_")){
                 error(lex.reserveFor("PLUS_"), token.lexeme);
             }else{
                 error(lex.reserveFor("SUBTR"), token.lexeme);
@@ -438,6 +446,7 @@ public class Syntactic {
         return recur;
     }
 
+    //Checks for a Plus or Minus at the beginning of a statement
     private int Sign() {
         int recur = 0;
         if (anyErrors) {
@@ -451,7 +460,7 @@ public class Syntactic {
         }else if (token.code == lex.codeFor("SUBTR")) {
             token = lex.GetNextToken();
         } else {
-            if(Objects.equals(lex.reserveFor("PLUS_"), "PLUS_")){
+            if(token.code == lex.codeFor("PLUS_")){
                 error(lex.reserveFor("PLUS_"), token.lexeme);
             }else{
                 error(lex.reserveFor("SUBTR"), token.lexeme);

@@ -28,16 +28,16 @@ public class Lexical {
     private String line;                      //Current line of input from file
     private int linePos;                      //Current character position
     //  in the current line
-    private SymbolTable saveSymbols;          //SymbolTable used in Lexical
+    private final SymbolTable saveSymbols;          //SymbolTable used in Lexical
     //  sent as parameter to construct
     private boolean EOF;                      //End Of File indicator
-    private boolean echo;                     //true means echo each input line
+    private final boolean echo;                     //true means echo each input line
     private boolean printToken;               //true to print found tokens here
     private int lineCount;                    //line #in file, for echo-ing
     private boolean needLine;                 //track when to read a new line
     //Tables to hold the reserve words and the mnemonics for token codes
-    private ReserveTable reserveWords = new ReserveTable(50); //a few more than # reserves
-    private ReserveTable mnemonics = new ReserveTable(50); //a few more than # reserves
+    private final ReserveTable reserveWords = new ReserveTable(50); //a few more than # reserves
+    private final ReserveTable mnemonics = new ReserveTable(50); //a few more than # reserves
     //global char
     char currCh;
 

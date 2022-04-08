@@ -39,7 +39,7 @@ public class Interpreter {
     static final int JNN = 14;
     static final int JINDR = 15;
 
-    private ReserveTable opTable;
+    private final ReserveTable opTable;
 
     //Constructor that initialzes the Interpretor, and its ReserveTable/Opcodes, ext..
     public Interpreter() {

@@ -84,7 +84,7 @@ public class SymbolTable {
                     return i;
             }
             //If the symbol did not exist, create it, and add it to the list.
-            values[total] = new String(value);
+            values[total] = value;
             names[total] = symbol;
             kinds[total] = kind;
             data_type[total] = 's';
@@ -150,7 +150,7 @@ public class SymbolTable {
 
     // Updates the Table at the correct index
     public void UpdateSymbol(int index, char kind, String value) {
-        values[index] = new String(value);
+        values[index] = value;
         kinds[index] = kind;
     }
 

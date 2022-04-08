@@ -11,7 +11,7 @@ import java.io.*;
 
 public class QuadTable {
 
-    public int quadTable [][]; //2D array to keep track of values
+    public int[][] quadTable; //2D array to keep track of values
     int nextAvailable;  //Keeps track of how many items are in the list
     int maxSize;
 
