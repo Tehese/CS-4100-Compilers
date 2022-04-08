@@ -34,6 +34,7 @@ public class Syntactic {
 
     private final int symbolSize = 250;
 
+    //Initializes the SymbolTable and Mneumonic Table from Lexical, and also lexical.
     public Syntactic(String filename, boolean traceOn) {
         filein = filename;
         traceon = traceOn;

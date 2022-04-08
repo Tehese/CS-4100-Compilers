@@ -66,6 +66,7 @@ public class Interpreter {
         return (opTable.LookupCode(opCode) != ""); //Returns False if Opcode in reserveTable is ""
     }
 
+    //Goes through the table of Opcodes in order to determine which function to perform.
     public void InterpretQuads(QuadTable Q, SymbolTable S, boolean TraceOn, String filename){
         int PC = 0; //Program Counter
         int opcode, op1, op2, op3; //opcodes for quadTable Referenced as q.op
