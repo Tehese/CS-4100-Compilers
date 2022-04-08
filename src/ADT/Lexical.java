@@ -200,8 +200,8 @@ public class Lexical {
         mnemonics.Add("ARRAY", 25);
 
         // 1 or 2 char mnemonics
-        mnemonics.Add("SLASH", 30);
-        mnemonics.Add("STAR_", 31);
+        mnemonics.Add("DIVID", 30);
+        mnemonics.Add("MULTI", 31);
         mnemonics.Add("PLUS_", 32);
         mnemonics.Add("DASH_", 33);
         mnemonics.Add("LPARA", 34);

@@ -18,8 +18,9 @@ inside of <> pointy brackets is a non-terminal
 selected
 5) Note that all named elements of the form $SOMETHING are token codes for terminals
 which are defined for this language and returned by the lexical analyzer.
-
  */
+
+
 package ADT;
 
 public class Syntactic {
@@ -102,7 +103,7 @@ public class Syntactic {
         return recur;
     }
 
-    //Non Terminal
+    //Non Terminal Checking for Beginning and End
     private int Block() {
         int recur = 0;
         if (anyErrors) {
@@ -139,8 +140,6 @@ public class Syntactic {
             return -1;
         }
         trace("handleAssignment", true);
-        //have ident already in order to get to here, handle as Variable
-        //recur = Variable();  //Variable moves ahead, next token ready
         recur = Variable();  //Variable moves ahead, next token ready
 
         if (token.code == lex.codeFor("ASNMT")) {
@@ -154,10 +153,7 @@ public class Syntactic {
         return recur;
     }
 
-    // NT This is dummied in to only work for an identifier.
-//  It will work with the SyntaxAMiniTest file.
-// SimpleExpression MUST BE
-//  COMPLETED TO IMPLEMENT CFG for <simple expression>
+//Incomplete Needs to Check for [<sign>] <Term> {<addop> <term>}
     private int SimpleExpression() {
         int recur = 0;
         if (anyErrors) {
@@ -167,10 +163,12 @@ public class Syntactic {
         trace("SimpleExpression", true);
         if (token.code == lex.codeFor("IDENT")) {
             token = lex.GetNextToken();
-        }else if (token.code == lex.codeFor("LPARA")){
+        }else if (token.code == (lex.codeFor("LPARA"))){
             recur = Term();
-        }else if (token.code == lex.codeFor("NCINT")){
-            recur = Factor();
+        } else if(token.code == (lex.codeFor("RPARA"))){
+            recur = Term();
+        } else if(token.code == (lex.codeFor("NCINT"))) {
+            recur = Term();
         }
         trace("SimpleExpression", false);
         return recur;
@@ -245,20 +243,6 @@ public class Syntactic {
         return result;
     }
 
-  //Template for all the non-terminal method bodies
-    private int exampleNonTerminal(){
-            int recur = 0;
-            if (anyErrors) {
-                return -1;
-            }
-
-            //Make Methods for all the non-terminals
-            trace("NameOfThisMethod", true);
-    // unique non-terminal stuff
-            trace("NameOfThisMethod", false);
-            return recur;
-
-    }
 
     private int Variable() {
         int recur = 0;
@@ -277,6 +261,8 @@ public class Syntactic {
         return recur;
     }
 
+
+    //Checks for an Unsigned Constant | Variable | Lpar <Simple Expression> Rpar
     private int Factor() {
         int recur = 0;
         if (anyErrors) {
@@ -285,10 +271,32 @@ public class Syntactic {
 
         trace("Factor", true);
 
-        if (token.code == lex.codeFor("IDENT")) {
-            token = lex.GetNextToken();
-        } else {
-            error(lex.reserveFor("IDENT"), token.lexeme);
+        if (token.code == (lex.codeFor("FCINT"))) {
+            recur = UnsignedConstant();
+        }else {
+            if(token.code == lex.codeFor("NCINT")){
+                recur = UnsignedConstant();
+            }else {
+                if(token.code == lex.codeFor("IDENT")){
+                    recur = Variable();
+                }else{
+                    if(token.code == lex.codeFor("LPARA")){
+                        token = lex.GetNextToken();
+                        recur = SimpleExpression();
+
+                    } else {
+                        if(token.code == lex.codeFor("RPARA")){
+                            token = lex.GetNextToken();
+                        }else {
+                            error(lex.reserveFor("RPARA"), token.lexeme);
+                        }
+                        error(lex.reserveFor("LPARA"), token.lexeme);
+                    }
+                    error(lex.reserveFor("IDENT"), token.lexeme);
+                }
+                error(lex.reserveFor("ICINT"), token.lexeme);
+            }
+            error(lex.reserveFor("FCINT"), token.lexeme);
         }
         trace("Factor", false);
         return recur;
@@ -303,14 +311,28 @@ public class Syntactic {
         trace("Term", true);
 
         if (token.code == lex.codeFor("LPARA")) {
-            token = lex.GetNextToken();
+            recur = Factor();
         } else {
-            error(lex.reserveFor("IDENT"), token.lexeme);
+            if(token.code == (lex.codeFor("NCINT"))){
+                recur = Factor();
+            }else {
+                if(token.code == lex.codeFor("DIVID")){
+                    recur = Factor();
+                }
+                else{
+                    error(lex.reserveFor("DIVID"), token.lexeme);
+                }
+                error(lex.reserveFor("MULTI"), token.lexeme);
+            }
+            error(lex.reserveFor("NCINT"), token.lexeme);
         }
+        error(lex.reserveFor("LPARA"),token.lexeme);
+
         trace("Term", false);
         return recur;
     }
 
+    //Checks for an Unsigned Constant then passes it to UnsignedNumber
     private int UnsignedConstant() {
         int recur = 0;
         if (anyErrors) {
@@ -319,15 +341,21 @@ public class Syntactic {
 
         trace("UnsignedConstant", true);
 
-        if (token.code == lex.codeFor("IDENT")) {
-            token = lex.GetNextToken();
-        } else {
-            error(lex.reserveFor("IDENT"), token.lexeme);
-        }
+        if (token.code == lex.codeFor("FCINT")) {
+            recur = UnsignedNumber();
+        } else if(token.code == lex.codeFor("NCINT")) {
+                recur = UnsignedNumber();
+            }else{
+                error(lex.reserveFor("NCINT"), token.lexeme);
+            }
+
+
         trace("UnsignedConstant", false);
+
         return recur;
     }
 
+    //Checks the Mneunomic for the correct reference for a Integer or Float
     private int UnsignedNumber() {
         int recur = 0;
         if (anyErrors) {
@@ -336,15 +364,22 @@ public class Syntactic {
 
         trace("UnsignedNumber", true);
 
-        if (token.code == lex.codeFor("IDENT")) {
+        if (token.code == lex.codeFor("NCINT")) {
             token = lex.GetNextToken();
         } else {
-            error(lex.reserveFor("IDENT"), token.lexeme);
+            if(token.code == lex.codeFor("FCINT")){
+                token = lex.GetNextToken();
+            }else {
+                error(lex.reserveFor("FCINT"), token.lexeme);
+            }
+            error(lex.reserveFor("NCINT"), token.lexeme);
         }
         trace("UnsignedNumber", false);
+
         return recur;
     }
 
+    //Checks for a Multiplier or Divide then gets next token
     private int Mulop() {
         int recur = 0;
         if (anyErrors) {
@@ -353,15 +388,24 @@ public class Syntactic {
 
         trace("Mulop", true);
 
-        if (token.code == lex.codeFor("STAR_")) {
+        if (token.code == lex.codeFor("MULTI")) {
             token = lex.GetNextToken();
-        } else {
-            error(lex.reserveFor("STAR_"), token.lexeme);
-        }
+        } else if (token.code == lex.codeFor("DIVID")) {
+                token = lex.GetNextToken();
+            } else {
+            error(lex.reserveFor("DIVID"), token.lexeme);
+
+            }
+            error(lex.reserveFor("MULTI"), token.lexeme);
+
+
+
         trace("Mulop", false);
+
         return recur;
     }
 
+    //Checks for a Plus or Minus Sign then gets next char
     private int Addop() {
         int recur = 0;
         if (anyErrors) {
@@ -373,6 +417,11 @@ public class Syntactic {
         if (token.code == lex.codeFor("PLUS_")) {
             token = lex.GetNextToken();
         } else {
+            if(token.code == lex.codeFor("DASH_")){
+                token = lex.GetNextToken();
+            }else {
+                error(lex.reserveFor("DASH_"), token.lexeme);
+            }
             error(lex.reserveFor("PLUS_"), token.lexeme);
         }
         trace("Addop", false);
@@ -385,14 +434,21 @@ public class Syntactic {
             return -1;
         }
 
-        trace("Addop", true);
+        trace("Sign", true);
 
         if (token.code == lex.codeFor("PLUS_")) {
             token = lex.GetNextToken();
         } else {
+            if(token.code == lex.codeFor("DASH_")){
+                token = lex.GetNextToken();
+            }else {
+                error(lex.reserveFor("DASH_"), token.lexeme);
+            }
             error(lex.reserveFor("PLUS_"), token.lexeme);
         }
-        trace("Addop", false);
+
+        trace("Sign", false);
+
         return recur;
     }
 
