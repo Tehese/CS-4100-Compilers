@@ -20,8 +20,16 @@ selected
 which are defined for this language and returned by the lexical analyzer.
  */
 
-
+/*
+Program mytest;
+BEGIN
+count := total;
+a:=b
+END.
+ */
 package ADT;
+
+import java.util.Objects;
 
 public class Syntactic {
 
@@ -159,17 +167,26 @@ public class Syntactic {
         if (anyErrors) {
             return -1;
         }
-
         trace("SimpleExpression", true);
-        if (token.code == lex.codeFor("IDENT")) {
-            token = lex.GetNextToken();
-        }else if (token.code == (lex.codeFor("LPARA"))){
-            recur = Term();
-        } else if(token.code == (lex.codeFor("RPARA"))){
-            recur = Term();
-        } else if(token.code == (lex.codeFor("NCINT"))) {
+
+        if (token.code == lex.codeFor("SUBTR") || token.code == lex.codeFor("PLUS_")) {
+            recur = Sign();
+        }
+        if(token.code == lex.codeFor("NCINT")
+                || token.code == lex.codeFor("FCINT")
+                || token.code == lex.codeFor("IDENT")
+                || token.code == lex.codeFor("LPARA")){
             recur = Term();
         }
+
+        if((token.code == lex.codeFor("PLUS_") || token.code == lex.codeFor("SUBTR"))) {
+
+            while ((token.code == lex.codeFor("PLUS_") || token.code == lex.codeFor("SUBTR"))) {
+                recur = Addop();
+                recur = Term();
+            }
+        }
+        //if() Enter Errors
         trace("SimpleExpression", false);
         return recur;
     }
@@ -273,34 +290,37 @@ public class Syntactic {
 
         if (token.code == (lex.codeFor("FCINT"))) {
             recur = UnsignedConstant();
-        }else {
-            if(token.code == lex.codeFor("NCINT")){
-                recur = UnsignedConstant();
-            }else {
-                if(token.code == lex.codeFor("IDENT")){
-                    recur = Variable();
-                }else{
-                    if(token.code == lex.codeFor("LPARA")){
-                        token = lex.GetNextToken();
-                        recur = SimpleExpression();
+        }else if(token.code == lex.codeFor("NCINT")){
+            recur = UnsignedConstant();
+        }else if(token.code == lex.codeFor("IDENT")){
+            recur = Variable();
+        }else if(token.code == lex.codeFor("LPARA")){
+            token = lex.GetNextToken();
+            recur = SimpleExpression();
+            if(token.code == lex.codeFor("RPARA"))
+                token = lex.GetNextToken();
+        } else{
 
-                    } else {
-                        if(token.code == lex.codeFor("RPARA")){
-                            token = lex.GetNextToken();
-                        }else {
-                            error(lex.reserveFor("RPARA"), token.lexeme);
-                        }
-                        error(lex.reserveFor("LPARA"), token.lexeme);
-                    }
-                    error(lex.reserveFor("IDENT"), token.lexeme);
-                }
-                error(lex.reserveFor("ICINT"), token.lexeme);
+            if(token.code == (lex.codeFor("FCINT"))){
+                error(lex.reserveFor("FCINT"), token.lexeme);
+            } else if(token.code == (lex.codeFor("NCINT"))){
+                error(lex.reserveFor("NCINT"), token.lexeme);
+            } else if(token.code == (lex.codeFor(("IDENT")))){
+                error(lex.reserveFor("IDENT"), token.lexeme);
             }
+            error(lex.reserveFor("NCINT"), token.lexeme);
             error(lex.reserveFor("FCINT"), token.lexeme);
+            error(lex.reserveFor("IDENT"), token.lexeme);
+            error(lex.reserveFor("LPARA"), token.lexeme);
+            error(lex.reserveFor("RPARA"), token.lexeme);
+
+
         }
+
         trace("Factor", false);
         return recur;
     }
+
 
     private int Term() {
         int recur = 0;
@@ -310,23 +330,18 @@ public class Syntactic {
 
         trace("Term", true);
 
-        if (token.code == lex.codeFor("LPARA")) {
+        if(token.code == lex.codeFor("NCINT") || token.code == lex.codeFor("FCINT")){
             recur = Factor();
-        } else {
-            if(token.code == (lex.codeFor("NCINT"))){
-                recur = Factor();
-            }else {
-                if(token.code == lex.codeFor("DIVID")){
-                    recur = Factor();
-                }
-                else{
-                    error(lex.reserveFor("DIVID"), token.lexeme);
-                }
-                error(lex.reserveFor("MULTI"), token.lexeme);
-            }
-            error(lex.reserveFor("NCINT"), token.lexeme);
+        } else if(token.code == (lex.codeFor("IDENT"))){
+            recur = Factor();
+        }else if(token.code == lex.codeFor("LPARA")){
+            recur = Factor();
         }
-        error(lex.reserveFor("LPARA"),token.lexeme);
+        while((token.code == lex.codeFor("MULTI") || token.code == lex.codeFor("DIVID"))){
+            recur = Mulop();
+            recur = Factor();
+        }
+        //if(){ add errors
 
         trace("Term", false);
         return recur;
@@ -364,15 +379,10 @@ public class Syntactic {
 
         trace("UnsignedNumber", true);
 
-        if (token.code == lex.codeFor("NCINT")) {
+        if ((token.code == lex.codeFor("NCINT") || token.code == lex.codeFor("FCINT"))) {
             token = lex.GetNextToken();
         } else {
-            if(token.code == lex.codeFor("FCINT")){
-                token = lex.GetNextToken();
-            }else {
-                error(lex.reserveFor("FCINT"), token.lexeme);
-            }
-            error(lex.reserveFor("NCINT"), token.lexeme);
+            //add errors
         }
         trace("UnsignedNumber", false);
 
@@ -390,15 +400,15 @@ public class Syntactic {
 
         if (token.code == lex.codeFor("MULTI")) {
             token = lex.GetNextToken();
-        } else if (token.code == lex.codeFor("DIVID")) {
+        }else if (token.code == lex.codeFor("DIVID")) {
                 token = lex.GetNextToken();
             } else {
-            error(lex.reserveFor("DIVID"), token.lexeme);
-
+                if(Objects.equals(lex.reserveFor("DIVID"), "DIVID")){
+                    error(lex.reserveFor("DIVID"), token.lexeme);
+                }else{
+                    error(lex.reserveFor("MULTI"), token.lexeme);
+                }
             }
-            error(lex.reserveFor("MULTI"), token.lexeme);
-
-
 
         trace("Mulop", false);
 
@@ -411,18 +421,18 @@ public class Syntactic {
         if (anyErrors) {
             return -1;
         }
-
         trace("Addop", true);
 
         if (token.code == lex.codeFor("PLUS_")) {
             token = lex.GetNextToken();
+        }else if (token.code == lex.codeFor("SUBTR")) {
+            token = lex.GetNextToken();
         } else {
-            if(token.code == lex.codeFor("DASH_")){
-                token = lex.GetNextToken();
-            }else {
-                error(lex.reserveFor("DASH_"), token.lexeme);
+            if(Objects.equals(lex.reserveFor("PLUS_"), "PLUS_")){
+                error(lex.reserveFor("PLUS_"), token.lexeme);
+            }else{
+                error(lex.reserveFor("SUBTR"), token.lexeme);
             }
-            error(lex.reserveFor("PLUS_"), token.lexeme);
         }
         trace("Addop", false);
         return recur;
@@ -438,13 +448,14 @@ public class Syntactic {
 
         if (token.code == lex.codeFor("PLUS_")) {
             token = lex.GetNextToken();
+        }else if (token.code == lex.codeFor("SUBTR")) {
+            token = lex.GetNextToken();
         } else {
-            if(token.code == lex.codeFor("DASH_")){
-                token = lex.GetNextToken();
-            }else {
-                error(lex.reserveFor("DASH_"), token.lexeme);
+            if(Objects.equals(lex.reserveFor("PLUS_"), "PLUS_")){
+                error(lex.reserveFor("PLUS_"), token.lexeme);
+            }else{
+                error(lex.reserveFor("SUBTR"), token.lexeme);
             }
-            error(lex.reserveFor("PLUS_"), token.lexeme);
         }
 
         trace("Sign", false);
@@ -452,6 +463,17 @@ public class Syntactic {
         return recur;
     }
 
+
+    private void checkErrors(Lexical.token token){
+        String word = token.mnemonic;
+
+        switch(word){
+            case "":
+
+        }
+
+
+    }
 
 }
 

@@ -203,7 +203,7 @@ public class Lexical {
         mnemonics.Add("DIVID", 30);
         mnemonics.Add("MULTI", 31);
         mnemonics.Add("PLUS_", 32);
-        mnemonics.Add("DASH_", 33);
+        mnemonics.Add("SUBTR", 33);
         mnemonics.Add("LPARA", 34);
         mnemonics.Add("RPARA", 35);
         mnemonics.Add("SCOLN", 36);
