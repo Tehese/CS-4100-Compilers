@@ -21,7 +21,6 @@ public class main {
                 boolean traceon = false; //true; //false;
                 Syntactic parser = new Syntactic(filePath, traceon);
                 parser.parse();
-
                 System.out.println("Done.");
         }
 

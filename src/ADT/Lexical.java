@@ -55,6 +55,8 @@ public class Lexical {
         //call initializations of tables
         initReserveWords(reserveWords);
         initMnemonics(mnemonics);
+        //Print Symboltable before
+        symbols.PrintSymbolTable("/Users/tehese/IdeaProjects/CS-4100-Compilers/src/Output Files/CodeGenBASICST-before.txt");
 
         //set up the file access, get first character, line retrieved 1st time
         try {
@@ -67,6 +69,9 @@ public class Lexical {
             EOF = true;
             e.printStackTrace();
         }
+        //Print Symboltable/Quadtable after
+        symbols.PrintSymbolTable("/Users/tehese/IdeaProjects/CS-4100-Compilers/src/Output Files/CodeGenBASICST-after.txt");
+
     }
 
     // token class is declared here, no accessors needed

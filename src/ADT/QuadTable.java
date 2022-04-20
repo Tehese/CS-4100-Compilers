@@ -89,6 +89,8 @@ public class QuadTable {
             e.printStackTrace();
         }
 
+        outputList.printf("Column  \t  Opcode \t Op1 \t Op2\t Op3\n");
+
         for (int i = 0; i <nextAvailable; i++){
             outputList.printf("Column: %d\t  Opcode:%d\t Op1:%d\t Op2:%d\t Op3:%d\n", i, quadTable[i][0], quadTable[i][1], quadTable[i][2], quadTable[i][3] );
         }
