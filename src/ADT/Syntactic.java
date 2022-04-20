@@ -367,8 +367,9 @@ public class Syntactic {
 
         trace("UnsignedNumber", true);
 
-        if ((token.code == lex.codeFor("NCINT") || token.code == lex.codeFor("FCINT"))) {
-            token = lex.GetNextToken();
+        if ((token.code == lex.codeFor("NCINT")
+                || token.code == lex.codeFor("FCINT"))) {
+                token = lex.GetNextToken();
         } else {
             //Handling Errors
                 error(lex.reserveFor("Unsigned Number"), token.lexeme);
