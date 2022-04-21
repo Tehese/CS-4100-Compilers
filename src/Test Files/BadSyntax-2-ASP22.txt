@@ -1,5 +1,5 @@
 
-module BadProg2;
+PROGRAM BadProg2;
 
 (* This Part A test file should has one syntax error after the lexical truncation... should continue! *)
 

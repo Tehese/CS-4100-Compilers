@@ -183,6 +183,8 @@ public class Syntactic {
             while ((token.code == lex.codeFor("PLUS_") || token.code == lex.codeFor("SUBTR"))) {
                 recur = Addop();
                 recur = Term();
+                if(!anyErrors)
+                    break;
             }
         }
 
@@ -329,6 +331,8 @@ public class Syntactic {
         while((token.code == lex.codeFor("MULTI") || token.code == lex.codeFor("DIVID"))){
             recur = Mulop();
             recur = Factor();
+            if(!anyErrors)
+                break;
         }
 
         trace("Term", false);

@@ -1,5 +1,5 @@
 
-module BadProg1;
+PROGRAM BadProg1;
 
 (* This Part A test file should have one syntax error! *)
 
