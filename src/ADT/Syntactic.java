@@ -54,7 +54,7 @@ public class Syntactic {
         recur = Program();
     }
 
-    // Non-Terminal which looks for an Identifer and updates the Symboltable
+    // Non-Terminal which looks for an Identifer and updates the Symboltablfe
     private int ProgIdentifier() {
         int recur = 0;
         if (anyErrors) {

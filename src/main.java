@@ -19,7 +19,8 @@ public class main {
                 System.out.println("IDE: IntelliJ\n");
 
 
-                String filePath = "d:\\CodeGenPartial.txt";
+                String filePath = "/Users/tehese/IdeaProjects/CS-4100-Compilers/src/Test Files/CodeGenBASICsp22.txt";
+                //String filePath = "/Users/tehese/IdeaProjects/CS-4100-Compilers/src/Test Files/CodeGenFULL-SP22-2.txt"; Full Test File
                 System.out.println("Parsing "+filePath);
                 boolean traceon = false; //true; //false;
                 Syntactic parser = new Syntactic(filePath, traceon);
