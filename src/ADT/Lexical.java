@@ -155,7 +155,7 @@ public class Lexical {
         reserveWords.Add(";", 36);
         reserveWords.Add(":=", 37);
         reserveWords.Add(">", 38);
-        reserveWords.Add("<", 39);
+        reserveWords.Add("< ", 39);
         reserveWords.Add(">=", 40);
         reserveWords.Add("<=", 41);
         reserveWords.Add("=", 42);

@@ -24,21 +24,35 @@ package ADT;
 
 public class Syntactic {
 
-    private final String filein;              //The full file path to input file
-    private final SymbolTable symbolList;     //Symbol table storing ident/const
-    private final Lexical lex;                //Lexical analyzer
+    private String filein;              //The full file path to input file
+    private SymbolTable symbolList;     //Symbol table storing ident/const
+    private Lexical lex;//Lexical analyzer
+    private QuadTable quads;
+    private Interpreter interp;
     private Lexical.token token;        //Next Token retrieved
-    private final boolean traceon;            //Controls tracing mode
+    private boolean traceon;            //Controls tracing mode
     private int level = 0;              //Controls indent for trace mode
     private boolean anyErrors;          //Set TRUE if an error happens
 
-    private final int symbolSize = 250;
+    private int symbolSize = 250;       //Max Size
+    private int quadSize = 1000;
+
+    private int Minus1Index;
+    private int Plus1Index;
 
     //Initializes the SymbolTable and Mneumonic Table from Lexical, and also lexical.
     public Syntactic(String filename, boolean traceOn) {
         filein = filename;
         traceon = traceOn;
+
         symbolList = new SymbolTable(symbolSize);
+        quads = new QuadTable(quadSize);
+        interp = new Interpreter();
+
+        Minus1Index = symbolList.AddSymbol("-1", symbolList.constantkind, -1);
+        Plus1Index = symbolList.AddSymbol("1", symbolList.constantKind), 1;
+
+
         lex = new Lexical(filein, symbolList, true);
         lex.setPrintToken(traceOn);
         anyErrors = false;
@@ -117,6 +131,7 @@ public class Syntactic {
         if (token.code == lex.codeFor("BEGIN")) {
             token = lex.GetNextToken();
             recur = Statement();
+
             while ((token.code == lex.codeFor("SCOLN")) && (!lex.EOF()) && (!anyErrors)) {
                 token = lex.GetNextToken();
                 recur = Statement();
@@ -134,6 +149,7 @@ public class Syntactic {
         trace("Block", false);
         return recur;
     }
+
 
     //Not a NT, but used to shorten Statement code body
     //<variable> $COLON-EQUALS <simple expression>
@@ -196,6 +212,8 @@ public class Syntactic {
     //Non Terminals, checks for IDENT and then IFS/WHILES/DOWHILES for part b
     private int Statement() {
         int recur = 0;
+        int branchQuad, patchElse;
+
         if (anyErrors) {
             return -1;
         }
@@ -206,11 +224,19 @@ public class Syntactic {
             recur = handleAssignment();
         } else {
             if (token.code == lex.codeFor("_I_f_")){  //must be an ASSIGNMENT
-                // this would handle the rest of the IF statement IN PART B
-                // Use a switch to call each function
-            } else // if/elses should look for the other possible statement starts...
-            //  but not until PART B
-            {
+                //move onto next token
+                token = lex.GetNextToken();
+                branchQuad = relexExpression();
+
+            } else {
+                if(token.code == lex.codeFor("WHILE")){
+                    //Move onto next token
+                    token = lex.GetNextToken();
+
+
+
+
+                }
                 error("Statement start", token.lexeme);
             }
         }
@@ -219,9 +245,45 @@ public class Syntactic {
         return recur;
     }
 
-    /*     UTILITY FUNCTIONS USED THROUGHOUT THIS CLASS */
-// error provides a simple way to print an error statement to standard output
-//     and avoid reduncancy
+    // $EQ | $LSS | $GTR | $NEQ | $LEQ | $GEQ
+    private int relop() {
+        int recur = 0;
+
+        if (anyErrors) {
+            return -1;
+        }
+
+        trace("relop", true);
+
+        if (token.code == lex.codeFor("EQUAL")
+                || token.code == lex.codeFor("LESS<")
+                || token.code == lex.codeFor("GRTH>")
+                || token.code == lex.codeFor("NEQUL")
+                || token.code == lex.codeFor("LSOR=")
+                || token.code == lex.codeFor("GROR=")) {
+            recur = symbolList.LookupSymbol(token.lexeme);
+            token = lex.GetNextToken();
+        }else {
+            error(lex.reserveFor("Variable"), token.lexeme);
+        }
+        trace("relop", false);
+        return recur;
+    }
+
+    // <simple expression> <relop> <simple expression>
+    private int relexExpression(){
+        int recur = 0;
+
+        if (anyErrors) {
+            return -1;
+        }
+
+        //Find Simple Expression
+
+
+        return recur;
+    }
+
     private void error(String wanted, String got) {
         anyErrors = true;
         System.out.println("ERROR: Expected " + wanted + " but found " + got);
@@ -273,10 +335,12 @@ public class Syntactic {
         trace("Variable", true);
 
         if (token.code == lex.codeFor("IDENT")) {
+            recur = symbolList.LookupSymbol(token.lexeme);
             token = lex.GetNextToken();
         } else {
             error(lex.reserveFor("Variable"), token.lexeme);
         }
+
         trace("Variable", false);
         return recur;
     }
@@ -309,6 +373,21 @@ public class Syntactic {
 
         trace("Factor", false);
         return recur;
+    }
+
+    private int handlePrintLn() {
+
+        int recur = 0;
+        int toPrint = 0;
+
+        //Checks for errors
+        if(anyErrors){
+            return -1;
+        }
+
+        trace("handlePrintLn", true);
+        // Move Next Token
+        token = lex.GetNextToken();
     }
 
 //Checks for Factor Components followed up a possible repeating Mulop + Factor
@@ -375,6 +454,7 @@ public class Syntactic {
 
         if ((token.code == lex.codeFor("NCINT")
                 || token.code == lex.codeFor("FCINT"))) {
+                recur = symbolList.LookupSymbol(token.lexeme);
                 token = lex.GetNextToken();
         } else {
             //Handling Errors
@@ -395,8 +475,10 @@ public class Syntactic {
         trace("Mulop", true);
 
         if (token.code == lex.codeFor("MULTI")) {
+            recur = symbolList.LookupSymbol(token.lexeme);
             token = lex.GetNextToken();
         }else if (token.code == lex.codeFor("DIVID")) {
+            recur = symbolList.LookupSymbol(token.lexeme);
                 token = lex.GetNextToken();
             } else {
                 error(lex.reserveFor("Mulop"), token.lexeme);
@@ -416,8 +498,10 @@ public class Syntactic {
         trace("Addop", true);
 
         if (token.code == lex.codeFor("PLUS_")) {
+            recur = symbolList.LookupSymbol(token.lexeme);
             token = lex.GetNextToken();
         }else if (token.code == lex.codeFor("SUBTR")) {
+            recur = symbolList.LookupSymbol(token.lexeme);
             token = lex.GetNextToken();
         } else {
             error(lex.reserveFor("Addop"), token.lexeme);
@@ -436,8 +520,10 @@ public class Syntactic {
         trace("Sign", true);
 
         if (token.code == lex.codeFor("PLUS_")) {
+            recur = symbolList.LookupSymbol(token.lexeme);
             token = lex.GetNextToken();
         }else if (token.code == lex.codeFor("SUBTR")) {
+            recur = symbolList.LookupSymbol(token.lexeme);
             token = lex.GetNextToken();
         } else {
             error(lex.reserveFor("Sign"), token.lexeme);
@@ -447,4 +533,26 @@ public class Syntactic {
 
         return recur;
     }
-}
+
+    private int stringConst(){
+
+        int recur = 0;
+        if (anyErrors) {
+            return -1;
+        }
+
+        trace("stringConst", true);
+
+        if (token.code == lex.codeFor("STRGC")){
+            recur = symbolList.LookupSymbol(token.lexeme);
+            token = lex.GetNextToken();
+        } else {
+            //Handling Errors
+            error(lex.reserveFor("stringConst"), token.lexeme);
+        }
+        trace("stringConst", false);
+
+        return recur;
+    } // End stringConst
+
+} // End Syntactic
