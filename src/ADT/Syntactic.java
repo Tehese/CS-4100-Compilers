@@ -49,8 +49,8 @@ public class Syntactic {
         quads = new QuadTable(quadSize);
         interp = new Interpreter();
 
-        Minus1Index = symbolList.AddSymbol("-1", symbolList.constantkind, -1);
-        Plus1Index = symbolList.AddSymbol("1", symbolList.constantKind), 1;
+        //Minus1Index = symbolList.AddSymbol("-1", symbolList.constantkind, -1);
+        //Plus1Index = symbolList.AddSymbol("1", symbolList.constantKind), 1;
 
 
         lex = new Lexical(filein, symbolList, true);
@@ -388,6 +388,8 @@ public class Syntactic {
         trace("handlePrintLn", true);
         // Move Next Token
         token = lex.GetNextToken();
+
+        return recur;
     }
 
 //Checks for Factor Components followed up a possible repeating Mulop + Factor
