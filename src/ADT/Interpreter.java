@@ -241,4 +241,10 @@ public class Interpreter {
         optable.Add("JINDR", 15);
     }
 
+    public int opcodeFor(String print) {
+
+        return opTable.LookupName(print);
+
+
+    }
 } // End of Interpreter

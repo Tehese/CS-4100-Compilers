@@ -20,12 +20,12 @@ public class main {
 
                 //PC File paths below
 
-                String filePath = "C:\\Users\\someb\\JavaProjects\\CS4100_Compilers\\src\\Test Files\\CodeGenBASICsp22.txt";
+                //String filePath = "C:\\Users\\someb\\JavaProjects\\CS4100_Compilers\\src\\Test Files\\CodeGenBASICsp22.txt";
                 //String filePath = "C:\\Users\\someb\\JavaProjects\\CS4100_Compilers\\src\\Test Files\\CodeGenFULL-SP22-2.txt";
 
                 //Mac File paths below
 
-                //String filePath = "/Users/tehese/IdeaProjects/CS-4100-Compilers/src/Test Files/CodeGenBASICsp22.txt";
+                String filePath = "/Users/tehese/IdeaProjects/CS-4100-Compilers/src/Test Files/CodeGenBASICsp22.txt";
                 //String filePath = "/Users/tehese/IdeaProjects/CS-4100-Compilers/src/Test Files/CodeGenFULL-SP22-2.txt"; Full Test File
                 System.out.println("Parsing "+filePath);
                 boolean traceon = false; //true; //false;
