@@ -302,11 +302,29 @@ public class Syntactic {
 
                 } else {
                     if(token.code == lex.codeFor("PRTLN")){
+                        if(token.code ==lex.codeFor("LPARA")){
+                            token = lex.GetNextToken();
 
+                            //Check for Simple Expression || String Constant
+
+                            // Look for Right para to finish it off, else error at each stage
+                        }
                     } else {
                         if(token.code == lex.codeFor("READL")){
 
-                        }
+                            if(token.code == lex.codeFor("LPARA")){
+                                 token = lex.GetNextToken();
+
+                                 //Check for Variable
+                                 //Check for RPARA
+
+                            } else {
+
+                            }
+
+
+
+                        } // end READ IF
                     }
 
                 }
