@@ -7,6 +7,7 @@ Homework #3 Interpreter
 package ADT;
 
 import java.io.*;
+import java.util.Scanner;
 
 public class Interpreter {
 
@@ -204,6 +205,18 @@ public class Interpreter {
                     case STOP:
                         System.out.println("Execution terminated by program STOP.");
                         PC = Q.maxSize();
+                        break;
+
+                    case READ:
+                        //Assuming operand must be an integer
+                        Scanner sc = new Scanner(System.in);
+                        System.out.print('>');
+                        //Reading only 1 integer
+                        int readval = sc.nextInt();
+                        //place in op3
+                        S.UpdateSymbol(op3, 'i', readval);
+                        sc = null;
+                        PC++;
                         break;
 
                 }//End Switch
