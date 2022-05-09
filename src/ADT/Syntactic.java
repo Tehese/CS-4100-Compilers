@@ -39,6 +39,7 @@ public class Syntactic {
     private int symbolSize = 250;       //Max Size
     private int quadSize = 1000;
     private int genCount = 0; //Keeps track of adding temps in Symbol Table
+    private int Location;
 
     private int Minus1Index;
     private int Plus1Index;
@@ -52,8 +53,8 @@ public class Syntactic {
         quads = new QuadTable(quadSize);
         interp = new Interpreter();
 
-        //Minus1Index = symbolList.AddSymbol("-1", symbolList.constantkind, -1);
-        //Plus1Index = symbolList.AddSymbol("1", symbolList.constantKind), 1;
+        Minus1Index = symbolList.AddSymbol("-1", 'c', -1);
+        Plus1Index = symbolList.AddSymbol("1", 'c', 1);
 
 
         lex = new Lexical(filein, symbolList, true);
@@ -64,9 +65,6 @@ public class Syntactic {
     //The interface to the syntax analyzer, initiates parsing
 // Uses variable RECUR to get return values throughout the non-terminal methods
     public void parse() {
-
-
-
 
         int recur = 0;
 
@@ -81,9 +79,9 @@ public class Syntactic {
 
         //print ST/QT Before
         symbolList.PrintSymbolTable("C:\\Users\\someb\\JavaProjects\\CS4100_Compilers\\src\\Output Files\\CodeGenBASICST-before.txt");
-        quads.PrintQuadTable("C:\\Users\\someb\\JavaProjects\\CS4100_Compilers\\src\\Output Files\\CodeGenBASICST-before.txt");
+        quads.PrintQuadTable("C:\\Users\\someb\\JavaProjects\\CS4100_Compilers\\src\\Output Files\\CodeGenBASICQUADS.txt");
 
-        if(anyErrors){
+        if(anyErrors == false){
             interp.InterpretQuads(quads,symbolList,false, "C:\\Users\\someb\\JavaProjects\\CS4100_Compilers\\src\\Output Files\\TRACE.txt");
         } else {
             System.out.println("Errors, Unable to run the program");
@@ -186,7 +184,6 @@ public class Syntactic {
         recur = Variable();  //Variable moves ahead, next token ready
 
         if (token.code == lex.codeFor("ASNMT")) {
-            token = lex.GetNextToken();
             recur = SimpleExpression();
         } else {
             error(lex.reserveFor("ASNMT"), token.lexeme);
@@ -198,23 +195,16 @@ public class Syntactic {
 
 //Checks for [<sign>] <Term> {<addop> <term>}
     private int SimpleExpression() {
-        int left = 0;
-        int right = 0;
-        int temp = 0;
-        int opcode = 0;
-        int signval = 0;
+        int left, right, signval, temp, opcode;
+
+        signval = Sign();
+        left = Term();
 
         if (anyErrors) {
             return -1;
         }
         trace("SimpleExpression", true);
 
-        if(token.code == lex.codeFor("PLUS_")
-                || token.code == lex.codeFor("SUBTR")){
-            signval = Sign(); //Returns 1 if Plus, -1 is Minus
-        }else {
-            left = Term();
-        }
 
 
         if(signval == -1)
@@ -251,14 +241,14 @@ public class Syntactic {
 
         trace("Statement", true);
 
-
         if (token.code == lex.codeFor("IDENT")) {  //must be an ASSIGNMENT
-            left = handleAssignment();
+            left = Variable();
 
             if (token.code == lex.codeFor("ASNMT")) {
                 token = lex.GetNextToken();
                 right = SimpleExpression();
                 quads.AddQuad(interp.opcodeFor("MOV"), right, 0, left);
+                token = lex.GetNextToken();
             } else {
                 error("Assignment", token.lexeme);
             }
@@ -277,9 +267,9 @@ public class Syntactic {
                         patchElse = quads.NextQuad();
 
                         quads.AddQuad(interp.opcodeFor("JMP"), 0, 0, 0);
-                        //quads.setQuadOp3(branchQuad,nextQuad)
+                        quads.setQuadOp3(branchQuad,quads.NextQuad());
                         Statement();
-                        //quads.setQuadOp3(patchElse,nextQuad)
+                        quads.setQuadOp3(patchElse,quads.NextQuad());
                     } else {
                         //quads.setquadOp3(branchquad,nextquad)
                     }
@@ -299,39 +289,27 @@ public class Syntactic {
                 } else {
                     if (token.code == lex.codeFor("PRTLN")) {
                         handlePrintln();
-                        trace("Statement", true);
-                        return 0;
 
                     } else {
                         if (token.code == lex.codeFor("READL")) {
+                            handleReadN();
 
-                            if (token.code == lex.codeFor("LPARA")) {
-                                token = lex.GetNextToken();
-
-                                //Check for Variable
-                                //Check for RPARA
-
-
-                            } // end READ IF
                         } else {
-                            error("Statement start", token.lexeme);
+                            error("ReadL", token.lexeme);
                         }
+
                     }
-                    error("PrintLine", token.lexeme);
+
+
                 }
+
             }
+
         }
 
         trace("Statement", true);
         return 0;
     }
-
-
-
-
-
-
-
 
     // $EQ | $LSS | $GTR | $NEQ | $LEQ | $GEQ
     private int relop() {
@@ -357,6 +335,29 @@ public class Syntactic {
         trace("relop", false);
         return recur;
     }
+
+
+/*
+    int relopToOpcode(int relop){
+        int result;
+
+        switch (relop){
+
+            case Equal:
+                result = interp.opcodeFor("JNZ");
+                break;
+            case NOTEQUAL:
+                result = interp.opcodeFor("JNZ");
+                break;
+            case LESS:
+                result = interp.opcodeFor("JNZ");
+                break;
+
+        }
+
+    }
+*/
+
 
     // <simple expression> <relop> <simple expression>
     private int relexExpression(){
@@ -494,6 +495,36 @@ public class Syntactic {
         return recur;
     }
 
+    private int handleReadN() {
+        int recur = 0;
+
+        if(anyErrors){
+            return -1;
+        }
+
+        trace("handleReadN",true);
+
+        token = lex.GetNextToken(); //Move next
+
+        if(token.code == lex.codeFor("LPARA")){
+            token = lex.GetNextToken();
+            Variable();
+
+            if(token.code == lex.codeFor("RPARA")){
+                token = lex.GetNextToken(); //Move next
+            }else {
+                error("RPARA", token.lexeme);
+            }
+        } else {
+            error("LPARA", token.lexeme);
+        }
+        return recur;
+    }
+
+
+
+
+
     private int handlePrintln() {
         int recur = 0;
         int toprint = 0;
@@ -598,7 +629,6 @@ public class Syntactic {
         if ((token.code == lex.codeFor("NCINT")
                 || token.code == lex.codeFor("FCINT"))) {
                 recur = symbolList.LookupSymbol(token.lexeme);
-                token = lex.GetNextToken();
         } else {
             //Handling Errors
                 error(lex.reserveFor("Unsigned Number"), token.lexeme);
@@ -662,17 +692,13 @@ public class Syntactic {
 
         trace("Sign", true);
 
-        if (token.code == lex.codeFor("PLUS_")) {
-            token = lex.GetNextToken();
-        }else if (token.code == lex.codeFor("SUBTR")) {
+        if (token.code == lex.codeFor("SUBTR")){
             result = -1;
             token = lex.GetNextToken();
-        } else {
-            error(lex.reserveFor("Sign"), token.lexeme);
+        } else if (token.code == lex.codeFor("PLUS_")){
+            token = lex.GetNextToken();
         }
-
         trace("Sign", false);
-
         return result;
     }
 

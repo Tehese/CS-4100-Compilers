@@ -431,7 +431,7 @@ public class Lexical {
     private token getNumber(char ch) {
         token result = new token();
 
-       while(isDigit(ch) || (ch=='E') || (ch=='e')||(ch == '.') || (ch == '-') || (ch =='+')) {
+       while(isDigit(ch) || (ch=='E') || (ch=='e')||(ch == '.') || (ch == '-')) {
            result.lexeme = result.lexeme + ch;
 
            if(ch =='E'|| ch =='e'|| ch=='.'){

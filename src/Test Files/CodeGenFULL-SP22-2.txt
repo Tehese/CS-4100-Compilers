@@ -1,6 +1,6 @@
 PROGRAM Codegen;
 begin
-println("FULL SP22 TEST File for <ENTER YOUR STUDENT FULL NAME HERE>");
+println("FULL SP22 TEST File for <Scott Canfield>");
 
 factorial := 1;
 println("Enter the value 5 for n:");

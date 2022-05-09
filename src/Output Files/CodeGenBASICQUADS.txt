@@ -1,13 +1,7 @@
-Scott Canfield
-Last 4 of Student Id: 2339
-CS 4100 Compilers
-Spring 2022
-IDE: IntelliJ
-
-0001 
-0002 module BadProg2;
-	IDENT | 	0050 | 	module
---> Entering Program
-ERROR: Expected PROGRAM but found module
-<-- Exiting Program
-Done.
+Column  	  Opcode 	 Op1 	 Op2	 Op3
+Column: 0	  Opcode:6	 Op1:3	 Op2:0	 Op3:0
+Column: 1	  Opcode:6	 Op1:4	 Op2:0	 Op3:0
+Column: 2	  Opcode:5	 Op1:6	 Op2:0	 Op3:5
+Column: 3	  Opcode:5	 Op1:8	 Op2:0	 Op3:7
+Column: 4	  Opcode:5	 Op1:8	 Op2:0	 Op3:5
+Column: 5	  Opcode:0	 Op1:0	 Op2:0	 Op3:0

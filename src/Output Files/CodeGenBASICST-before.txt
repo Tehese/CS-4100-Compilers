@@ -1,4 +1,9 @@
-Column  	  Opcode 	 Op1 	 Op2	 Op3
-Column: 0	  Opcode:6	 Op1:1	 Op2:0	 Op3:0
-Column: 1	  Opcode:6	 Op1:2	 Op2:0	 Op3:0
-Column: 2	  Opcode:0	 Op1:0	 Op2:0	 Op3:0
+00| -1              | c | i | -1
+01| 1               | c | i | 1
+02| CodegenBASIC    | p | i | 0
+03| BASIC TEST File SP22 | c | s | BASIC TEST File SP22
+04| String printout:  Hello World | c | s | String printout:  Hello World
+05| a               | v | i | 0
+06| 2               | c | i | 2
+07| b               | v | i | 0
+08| 3               | c | i | 3

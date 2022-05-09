@@ -34,6 +34,10 @@ public class QuadTable {
 
     }
 
+    public void setQuadOp3(int index,int op3){
+        this.quadTable[index][3] = op3;
+    }
+
     //Returns the int at position [index][column]
     public int GetQuad(int index, int column){return quadTable[index][column];
     }

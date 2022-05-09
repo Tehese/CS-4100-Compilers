@@ -1,5 +1,9 @@
-00| CodegenBASIC    | p | i | 0
-01| BASIC TEST File SP22 | c | s | BASIC TEST File SP22
-02| String printout:  Hello World | c | s | String printout:  Hello World
-03| a               | v | i | 0
-04| 2               | c | i | 2
+00| -1              | c | i | -1
+01| 1               | c | i | 1
+02| CodegenBASIC    | p | i | 0
+03| BASIC TEST File SP22 | c | s | BASIC TEST File SP22
+04| String printout:  Hello World | c | s | String printout:  Hello World
+05| a               | v | i | 0
+06| 2               | c | i | 2
+07| b               | v | i | 0
+08| 3               | c | i | 3
