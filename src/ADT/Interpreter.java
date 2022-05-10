@@ -195,10 +195,10 @@ public class Interpreter {
 
                     //prints the Symbol Table name and Op3 to console
                     case PRINT:
-                        if(S.GetDataType(op1) == 's'){ //Checks to see if it is a string
-                            System.out.println(S.GetSymbol(op1));
+                        if(S.GetDataType(op3) == 's'){ //Checks to see if it is a string
+                            System.out.println(S.GetSymbol(op3));
                         }else //Else print the Integer
-                            System.out.println(S.GetInteger(op1));
+                            System.out.println(S.GetInteger(op3));
                         PC++;
                         break;
 

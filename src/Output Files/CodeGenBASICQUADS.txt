@@ -1,7 +1,21 @@
 Column  	  Opcode 	 Op1 	 Op2	 Op3
-Column: 0	  Opcode:6	 Op1:3	 Op2:0	 Op3:0
-Column: 1	  Opcode:5	 Op1:1	 Op2:0	 Op3:4
-Column: 2	  Opcode:6	 Op1:5	 Op2:0	 Op3:0
-Column: 3	  Opcode:7	 Op1:0	 Op2:0	 Op3:6
-Column: 4	  Opcode:5	 Op1:1	 Op2:0	 Op3:7
-Column: 5	  Opcode:0	 Op1:0	 Op2:0	 Op3:0
+Column: 0	  Opcode:6	 Op1:0	 Op2:0	 Op3:3
+Column: 1	  Opcode:6	 Op1:0	 Op2:0	 Op3:4
+Column: 2	  Opcode:5	 Op1:6	 Op2:0	 Op3:5
+Column: 3	  Opcode:5	 Op1:8	 Op2:0	 Op3:7
+Column: 4	  Opcode:4	 Op1:8	 Op2:7	 Op3:9
+Column: 5	  Opcode:2	 Op1:5	 Op2:9	 Op3:10
+Column: 6	  Opcode:4	 Op1:10	 Op2:5	 Op3:11
+Column: 7	  Opcode:2	 Op1:6	 Op2:7	 Op3:12
+Column: 8	  Opcode:1	 Op1:12	 Op2:6	 Op3:13
+Column: 9	  Opcode:4	 Op1:11	 Op2:13	 Op3:14
+Column: 10	  Opcode:3	 Op1:14	 Op2:1	 Op3:15
+Column: 11	  Opcode:5	 Op1:15	 Op2:0	 Op3:5
+Column: 12	  Opcode:6	 Op1:0	 Op2:0	 Op3:16
+Column: 13	  Opcode:6	 Op1:0	 Op2:0	 Op3:5
+Column: 14	  Opcode:6	 Op1:0	 Op2:0	 Op3:17
+Column: 15	  Opcode:7	 Op1:0	 Op2:0	 Op3:5
+Column: 16	  Opcode:6	 Op1:0	 Op2:0	 Op3:18
+Column: 17	  Opcode:6	 Op1:0	 Op2:0	 Op3:5
+Column: 18	  Opcode:6	 Op1:0	 Op2:0	 Op3:19
+Column: 19	  Opcode:0	 Op1:0	 Op2:0	 Op3:0

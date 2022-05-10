@@ -517,7 +517,7 @@ public class Syntactic {
                 }else {
                     toprint = SimpleExpression();
                 }
-                quads.AddQuad(interp.opcodeFor("PRINT"), toprint, 0, 0);
+                quads.AddQuad(interp.opcodeFor("PRINT"), 0, 0, toprint);
                 //now need right ")"
                 if (token.code == lex.codeFor("RPARA")) {
                 //move on
