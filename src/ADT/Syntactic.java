@@ -78,8 +78,14 @@ public class Syntactic {
         quads.AddQuad(interp.opcodeFor("STOP"),0,0,0);
 
         //print ST/QT Before
+
+        //Basic Files
         symbolList.PrintSymbolTable("C:\\Users\\someb\\JavaProjects\\CS4100_Compilers\\src\\Output Files\\CodeGenBASICST-before.txt");
         quads.PrintQuadTable("C:\\Users\\someb\\JavaProjects\\CS4100_Compilers\\src\\Output Files\\CodeGenBASICQUADS.txt");
+
+        //Full Files
+        //symbolList.PrintSymbolTable("C:\\Users\\someb\\JavaProjects\\CS4100_Compilers\\src\\Output Files\\CodeGenFULLST-before.txt");
+        //quads.PrintQuadTable("C:\\Users\\someb\\JavaProjects\\CS4100_Compilers\\src\\Output Files\\CodeGenFULLQUADS.txt");
 
         if(anyErrors == false){
             interp.InterpretQuads(quads,symbolList,false, "C:\\Users\\someb\\JavaProjects\\CS4100_Compilers\\src\\Output Files\\TRACE.txt");
@@ -87,6 +93,7 @@ public class Syntactic {
             System.out.println("Errors, Unable to run the program");
         }
 
+        //symbolList.PrintSymbolTable("C:\\Users\\someb\\JavaProjects\\CS4100_Compilers\\src\\Output Files\\CodeGenFullST-after.txt");
         symbolList.PrintSymbolTable("C:\\Users\\someb\\JavaProjects\\CS4100_Compilers\\src\\Output Files\\CodeGenBASICST-after.txt");
     }
 
