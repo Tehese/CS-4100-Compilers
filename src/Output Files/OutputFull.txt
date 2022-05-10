@@ -1,0 +1,24 @@
+"C:\Program Files\Java\jdk-17.0.2\bin\java.exe" "-javaagent:C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2021.3.1\lib\idea_rt.jar=51967:C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2021.3.1\bin" -Dfile.encoding=UTF-8 -classpath C:\Users\someb\JavaProjects\CS4100_Compilers\out\production\untitled104 main
+Scott Canfield
+CS 4100 Compilers
+Last 4 of Student ID: 2339
+Spring 2022
+IDE: IntelliJ
+
+Parsing C:\Users\someb\JavaProjects\CS4100_Compilers\src\Test Files\CodeGenFULL-SP22-2.txt
+0001 PROGRAM Codegen;
+0002 begin
+0003 println("FULL SP22 TEST File for <Scott Canfield>");
+0004 
+0005 factorial := 1;
+0006 println("Enter the value 5 for n:");
+0007 readln(n);  {should be same as n := 5;}
+0008 count := 1;
+0009 dowhile count <= n
+0010   begin
+ERROR: Expected END but found begin
+ERROR: Expected . but found begin
+Errors, Unable to run the program
+Done.
+
+Process finished with exit code 0

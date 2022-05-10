@@ -20,7 +20,7 @@ public class main {
 
                 //PC File paths below
                 String filePath = "C:\\Users\\someb\\JavaProjects\\CS4100_Compilers\\src\\Test Files\\CodeGenBASICsp22.txt";
-                //String filePath = "C:\\Users\\someb\\JavaProjects\\CS4100_Compilers\\src\\Test Files\\CodeGenFULL-SP22-2.txt";
+                // filePath = "C:\\Users\\someb\\JavaProjects\\CS4100_Compilers\\src\\Test Files\\CodeGenFULL-SP22-2.txt";
 
                 //Mac File paths below
 
