@@ -2,6 +2,8 @@
 Scott Canfield
 CS 4100 Compilers
 Homework #3 Interpreter
+
+Fixed a few glitches when incorporating Syntactic
  */
 
 package ADT;

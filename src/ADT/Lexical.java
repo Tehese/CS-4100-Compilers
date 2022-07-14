@@ -642,9 +642,7 @@ public class Lexical {
         } else //default char checks
         {
             result = getOneTwoChar(currCh);
-
         }
-
         if ((result.lexeme.equals("")) || (EOF)) {
             result = null;
         }

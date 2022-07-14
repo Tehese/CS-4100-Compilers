@@ -2,6 +2,8 @@
 Scott Canfield
 CS 4100 Compilers
 Part 2 SymbolTable/Quadtable
+
+Perfect, works with everything
  */
 
 

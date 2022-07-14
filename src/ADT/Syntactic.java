@@ -18,6 +18,10 @@ inside of <> pointy brackets is a non-terminal
 selected
 5) Note that all named elements of the form $SOMETHING are token codes for terminals
 which are defined for this language and returned by the lexical analyzer.
+
+
+Overall Incomplete
+However, finished enough to pass the class and accomplish basic Compiler Functions
  */
 
 package ADT;
@@ -321,6 +325,7 @@ public class Syntactic {
 
         trace("relop", true);
 
+        //Use a switch if changing next time
         if (token.code == lex.codeFor("EQUAL")
                 || token.code == lex.codeFor("LESS<")
                 || token.code == lex.codeFor("GRTH>")
